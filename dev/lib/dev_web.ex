@@ -79,6 +79,7 @@ defmodule DevWeb do
   defp html_helpers do
     quote do
       import DevWeb.CoreComponents
+      import Uikit.Components
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components

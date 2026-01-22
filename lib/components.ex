@@ -33,4 +33,122 @@ defmodule Uikit.Components do
     </button>
     """
   end
+
+  @doc """
+  A standard UIkit badge.
+
+  ## Examples
+      <.uk_badge>1</.uk_badge>
+  """
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def uk_badge(assigns) do
+    ~H"""
+    <span class={["uk-badge", @class]} {@rest}>
+      {render_slot(@inner_block)}
+    </span>
+    """
+  end
+
+  @doc """
+  A standard UIkit card.
+
+  ## Examples
+
+      <.uk_card>
+        <:header>
+          <.uk_card_title>Title</.uk_card_title>
+        </:header>
+        <:body>
+          Content
+        </:body>
+        <:footer>
+          <a href="#" class="uk-button uk-button-text">Read more</a>
+        </:footer>
+      </.uk_card>
+  """
+  attr :variant, :string, default: "default", values: ~w(default primary secondary)
+  attr :size, :string, default: nil, values: [nil, "small", "large"]
+  attr :hover, :boolean, default: false
+  attr :class, :string, default: nil
+  attr :rest, :global
+
+  slot :header
+  slot :body
+  slot :footer
+  slot :inner_block
+
+  def uk_card(assigns) do
+    ~H"""
+    <div
+      class={[
+        "uk-card",
+        "uk-card-#{@variant}",
+        @size && "uk-card-#{@size}",
+        @hover && "uk-card-hover",
+        @class
+      ]}
+      {@rest}
+    >
+      <div :if={@header} class="uk-card-header">
+        {render_slot(@header)}
+      </div>
+
+      <div :if={@body} class="uk-card-body">
+        {render_slot(@body)}
+      </div>
+
+      {render_slot(@inner_block)}
+
+      <div :if={@footer} class="uk-card-footer">
+        {render_slot(@footer)}
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Title component for the card.
+  """
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def uk_card_title(assigns) do
+    ~H"""
+    <h3 class={["uk-card-title", @class]} {@rest}>
+      {render_slot(@inner_block)}
+    </h3>
+    """
+  end
+
+  @doc """
+  A standard UIkit container.
+
+  ## Examples
+      <.uk_container size="small">
+        Content
+      </.uk_container>
+  """
+  attr :size, :string, default: nil, values: [nil, "xsmall", "small", "large", "xlarge", "expand"]
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def uk_container(assigns) do
+    ~H"""
+    <div
+      class={[
+        "uk-container",
+        @size && "uk-container-#{@size}",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
 end

@@ -1,5 +1,69 @@
 <Layouts.flash_group flash={@flash} />
 
-<div>
-  <Uikit.Components.uk_button>asdfadfs</Uikit.Components.uk_button>
-</div>
+<.uk_container>
+  <h1>Uikit Components</h1>
+  
+  <div>
+    <h2>Button</h2>
+    <.uk_button variant="primary">Primary Button</.uk_button>
+    <.uk_button>Default Button</.uk_button>
+  </div>
+
+  <div>
+    <h2>Badge</h2>
+    <.uk_badge>1</.uk_badge>
+    <.uk_badge>100</.uk_badge>
+  </div>
+
+  <div>
+    <h2>Card</h2>
+    <div class="grid grid-cols-3 gap-4">
+      <.uk_card class="uk-margin-bottom">
+        <:header>
+          <.uk_card_title>Default Card</.uk_card_title>
+        </:header>
+        <:body>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </:body>
+        <:footer>
+          <.uk_button variant="text">Read more</.uk_button>
+        </:footer>
+      </.uk_card>
+
+      <.uk_card  class="uk-margin-bottom"variant="primary" hover>
+        <:body>
+          <.uk_card_title>Primary + Hover</.uk_card_title>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </:body>
+      </.uk_card>
+
+      <.uk_card  class="uk-margin-bottom"variant="secondary" size="small">
+        <:body>
+          <.uk_card_title>Secondary + Small</.uk_card_title>
+          <p>Lorem ipsum dolor sit amet.</p>
+        </:body>
+      </.uk_card>
+    </div>
+  </div>
+
+  <div>
+    <h2>Container</h2>
+    <div class="space-y-4 border p-4 bg-gray-100">
+      <.uk_container class="bg-white p-2 border">
+        Default Container
+      </.uk_container>
+
+      <.uk_container size="xsmall" class="bg-white p-2 border">
+        XSmall Container
+      </.uk_container>
+
+      <.uk_container size="small" class="bg-white p-2 border">
+        Small Container
+      </.uk_container>
+
+      <.uk_container size="expand" class="bg-white p-2 border">
+        Expand Container
+      </.uk_container>
+    </div>
+  </div>
+</.uk_container>
