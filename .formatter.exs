@@ -1,4 +1,11 @@
 # Used by "mix format"
 [
-  inputs: ["{mix,.formatter}.exs", "{config,lib,test}/**/*.{ex,exs}"]
+  import_deps: [:phoenix],
+  plugins: [Phoenix.LiveView.HTMLFormatter, Quokka],
+  inputs: [
+    "{mix,.formatter}.exs",
+    "{config,lib,test}/**/*.{ex,exs}",
+    "dev/{mix,.formatter}.exs",
+    "dev/{config,lib,test}/**/*.{ex,exs}"
+  ]
 ]

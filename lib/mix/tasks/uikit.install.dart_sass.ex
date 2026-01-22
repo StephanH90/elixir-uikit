@@ -85,12 +85,10 @@ if Code.ensure_loaded?(Igniter) do
         "config/config.exs",
         app_name,
         [:dart_sass],
-        [
-          version: "1.77.0",
-          default: [
-            args: ~w(css/app.scss ../priv/static/assets/app.css),
-            cd: Path.expand("../assets", __DIR__)
-          ]
+        version: "1.77.0",
+        default: [
+          args: ~w(css/app.scss ../priv/static/assets/app.css),
+          cd: Path.expand("../assets", __DIR__)
         ]
       )
     end

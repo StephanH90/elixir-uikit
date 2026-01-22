@@ -7,16 +7,15 @@ defmodule Uikit.Components do
   ## Examples
       <.uk_button variant="primary">Click me</.uk_button>
   """
-  attr(:variant, :string,
+  attr :variant, :string,
     default: "default",
     values: ~w(default primary secondary danger text link)
-  )
 
-  attr(:size, :string, default: nil, values: [nil, "small", "large"])
-  attr(:type, :string, default: "button")
-  attr(:class, :string, default: nil)
-  attr(:rest, :global)
-  slot(:inner_block, required: true)
+  attr :size, :string, default: nil, values: [nil, "small", "large"]
+  attr :type, :string, default: "button"
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
 
   def uk_button(assigns) do
     ~H"""

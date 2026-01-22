@@ -1,5 +1,6 @@
 defmodule Mix.Tasks.Uikit.UpdateTest do
   use ExUnit.Case, async: true
+
   import Igniter.Test
 
   test "it warns when run" do

@@ -21,12 +21,14 @@ defmodule Uikit.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:tidewave, "~> 0.5", only: [:dev]},
       {:usage_rules, "~> 0.1", only: [:dev]},
       {:igniter, "~> 0.6", optional: true},
       {:req, "~> 0.5.0"},
       {:phoenix, "~> 1.8.3"},
       {:phoenix_live_view, "~> 1.0"},
-      {:phoenix_html, "~> 4.0"}
+      {:phoenix_html, "~> 4.0"},
+      {:quokka, "~> 2.11", only: [:dev, :test], runtime: false}
     ]
   end
 end
