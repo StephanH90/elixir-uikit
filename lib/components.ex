@@ -151,4 +151,47 @@ defmodule Uikit.Components do
     </div>
     """
   end
+
+  @doc """
+  A standard UIkit grid.
+
+  ## Examples
+      <.uk_grid gap="small" match>
+        <div>Item 1</div>
+        <div>Item 2</div>
+      </.uk_grid>
+  """
+  attr :gap, :string, default: nil, values: [nil, "small", "medium", "large", "collapse"]
+  attr :divider, :boolean, default: false
+  attr :match, :boolean, default: false
+  attr :masonry, :string, default: nil, values: [nil, "pack", "next", "true"]
+  attr :class, :string, default: nil
+  attr :rest, :global
+  slot :inner_block, required: true
+
+  def uk_grid(assigns) do
+    grid_opts =
+      if assigns.masonry do
+        "masonry: #{assigns.masonry}"
+      else
+        true
+      end
+
+    assigns = assign(assigns, :grid_opts, grid_opts)
+
+    ~H"""
+    <div
+      uk-grid={@grid_opts}
+      class={[
+        @gap && "uk-grid-#{@gap}",
+        @divider && "uk-grid-divider",
+        @match && "uk-grid-match",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
 end
