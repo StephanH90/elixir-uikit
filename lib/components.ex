@@ -51,6 +51,7 @@ defmodule Uikit.Components do
     doc: "The HTML type of the button (submit, reset, button)."
 
   attr :uk_toggle, :any, default: nil, doc: "The target modal or toggleable element."
+  attr :disabled, :boolean, default: false, doc: "Whether the button is disabled."
   attr :class, :string, default: nil, doc: "Additional CSS classes."
 
   attr :rest, :global,
@@ -72,6 +73,13 @@ defmodule Uikit.Components do
         Map.put(assigns.rest, :"uk-toggle", assigns.uk_toggle)
       else
         assigns.rest
+      end
+
+    rest =
+      if assigns.disabled do
+        Map.put(rest, :disabled, true)
+      else
+        rest
       end
 
     assigns =
@@ -624,6 +632,67 @@ defmodule Uikit.Components do
 
     ~H"""
     <div class={@class} {@rest} />
+    """
+  end
+
+  @doc """
+  Renders a UIkit subnav.
+
+  Subnavs are used to create navigation for smaller sections of a page.
+
+  ## Examples
+
+      <.uk_subnav pill>
+        <:item href="#1" active>Item 1</:item>
+        <:item href="#2">Item 2</:item>
+        <:item disabled>Item 3</:item>
+      </.uk_subnav>
+  """
+  attr :divider, :boolean, default: false, doc: "Whether to show a divider between items."
+  attr :pill, :boolean, default: false, doc: "Whether to show items as pills."
+  attr :class, :string, default: nil, doc: "Additional CSS classes for the list."
+  attr :rest, :global, doc: "Global attributes for the list."
+
+  slot :item, doc: "The navigation items." do
+    attr :href, :string, doc: "The link destination."
+    attr :active, :boolean, doc: "Whether the item is currently active."
+    attr :disabled, :boolean, doc: "Whether the item is disabled."
+    attr :class, :string, doc: "Additional CSS classes for the item container (li)."
+  end
+
+  def uk_subnav(assigns) do
+    ~H"""
+    <ul
+      class={[
+        "uk-subnav",
+        @divider && "uk-subnav-divider",
+        @pill && "uk-subnav-pill",
+        @class
+      ]}
+      {@rest}
+    >
+      <li
+        :for={item <- @item}
+        class={[
+          item[:active] && "uk-active",
+          item[:disabled] && "uk-disabled",
+          item[:class]
+        ]}
+      >
+        <%= if item[:disabled] do %>
+          <span {Map.drop(item, [:href, :active, :disabled, :class, :inner_block])}>
+            {render_slot(item)}
+          </span>
+        <% else %>
+          <.link
+            href={item[:href]}
+            {Map.drop(item, [:href, :active, :disabled, :class, :inner_block])}
+          >
+            {render_slot(item)}
+          </.link>
+        <% end %>
+      </li>
+    </ul>
     """
   end
 end

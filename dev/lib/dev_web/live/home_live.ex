@@ -27,6 +27,8 @@ defmodule DevWeb.HomeLive do
               <li><a href="#modal">Modal</a></li>
               <li><a href="#sortable">Sortable</a></li>
               <li><a href="#spinner">Spinner</a></li>
+              <li><a href="#subnav">Subnav</a></li>
+              
               <li class="uk-nav-divider"></li>
               <li class="uk-nav-header">Interactive Tests</li>
               <li><a href="#dynamic-content">Dynamic Content</a></li>
@@ -247,6 +249,33 @@ defmodule DevWeb.HomeLive do
               </div>
             </section>
 
+            <section id="subnav" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom">Subnav</h2>
+              <div class="uk-card uk-card-default uk-card-body">
+                <h3 class="uk-h4">Default</h3>
+                <.uk_subnav>
+                  <:item href="#subnav-1" active>Active</:item>
+                  <:item href="#subnav-2">Item</:item>
+                  <:item href="#subnav-3">Item</:item>
+                  <:item disabled>Disabled</:item>
+                </.uk_subnav>
+
+                <h3 class="uk-h4 uk-margin-top">Divider</h3>
+                <.uk_subnav divider>
+                  <:item href="#divider-1" active>Active</:item>
+                  <:item href="#divider-2">Item</:item>
+                  <:item href="#divider-3">Item</:item>
+                </.uk_subnav>
+
+                <h3 class="uk-h4 uk-margin-top">Pill</h3>
+                <.uk_subnav pill>
+                  <:item href="#pill-1" active>Active</:item>
+                  <:item href="#pill-2">Item</:item>
+                  <:item href="#pill-3">Item</:item>
+                </.uk_subnav>
+              </div>
+            </section>
+
             <hr class="uk-divider-icon" />
 
             <section id="dynamic-content" class="uk-margin-large-bottom">
@@ -350,10 +379,6 @@ defmodule DevWeb.HomeLive do
     {:noreply, assign(socket, loading: true)}
   end
 
-  def handle_info(:finished_loading, socket) do
-    {:noreply, assign(socket, loading: false)}
-  end
-
   def handle_event("open_programmatic_modal", _params, socket) do
     {:noreply, assign(socket, show_programmatic_modal: true)}
   end
@@ -364,5 +389,9 @@ defmodule DevWeb.HomeLive do
 
   def handle_event("uikit:modal_closed", _params, socket) do
     {:noreply, assign(socket, show_programmatic_modal: false)}
+  end
+
+  def handle_info(:finished_loading, socket) do
+    {:noreply, assign(socket, loading: false)}
   end
 end
