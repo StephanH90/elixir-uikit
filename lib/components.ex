@@ -50,10 +50,11 @@ defmodule Uikit.Components do
     default: "button",
     doc: "The HTML type of the button (submit, reset, button)."
 
+  attr :uk_toggle, :any, default: nil, doc: "The target modal or toggleable element."
   attr :class, :string, default: nil, doc: "Additional CSS classes."
 
   attr :rest, :global,
-    include: ~w(href navigate patch method download),
+    include: ~w(href navigate patch method download uk-icon uk-toggle),
     doc: "Global attributes or link-specific attributes."
 
   slot :inner_block, required: true, doc: "The content of the button."
@@ -66,7 +67,17 @@ defmodule Uikit.Components do
       assigns.class
     ]
 
-    assigns = assign(assigns, :class, class)
+    rest =
+      if assigns.uk_toggle do
+        Map.put(assigns.rest, :"uk-toggle", assigns.uk_toggle)
+      else
+        assigns.rest
+      end
+
+    assigns =
+      assigns
+      |> assign(:class, class)
+      |> assign(:rest, rest)
 
     if assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch] do
       ~H"""
@@ -155,17 +166,17 @@ defmodule Uikit.Components do
       ]}
       {@rest}
     >
-      <div :if={@header} class="uk-card-header">
+      <div :if={@header != []} class="uk-card-header">
         {render_slot(@header)}
       </div>
 
-      <div :if={@body} class="uk-card-body">
+      <div :if={@body != []} class="uk-card-body">
         {render_slot(@body)}
       </div>
 
       {render_slot(@inner_block)}
 
-      <div :if={@footer} class="uk-card-footer">
+      <div :if={@footer != []} class="uk-card-footer">
         {render_slot(@footer)}
       </div>
     </div>
@@ -265,6 +276,7 @@ defmodule Uikit.Components do
     <div
       uk-grid={@grid_opts}
       class={[
+        "uk-grid",
         @gap && "uk-grid-#{@gap}",
         @divider && "uk-grid-divider",
         @match && "uk-grid-match",
@@ -319,7 +331,7 @@ defmodule Uikit.Components do
       id={@id}
       uk-sortable={@sortable_opts}
       uk-grid={@grid}
-      class={@class}
+      class={["uk-sortable", @class]}
       {@rest}
     >
       {render_slot(@inner_block)}
@@ -344,7 +356,10 @@ defmodule Uikit.Components do
   attr :ratio, :any, default: 1, doc: "The size multiplier of the icon."
   attr :button, :boolean, default: false, doc: "Whether to render as an icon button."
   attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, include: ~w(href navigate patch method download uk-icon), doc: "Global attributes or link-specific attributes."
+
+  attr :rest, :global,
+    include: ~w(href navigate patch method download uk-icon uk-toggle),
+    doc: "Global attributes or link-specific attributes."
 
   def uk_icon(assigns) do
     icon_opts =
@@ -358,6 +373,7 @@ defmodule Uikit.Components do
     is_link = assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch]
 
     class = [
+      "uk-icon",
       assigns.button && "uk-icon-button",
       is_link && !assigns.button && "uk-icon-link",
       assigns.class
@@ -378,5 +394,165 @@ defmodule Uikit.Components do
       <span class={@class} {@rest} />
       """
     end
+  end
+
+  @doc """
+  Renders a UIkit modal.
+
+  Modals provide a dialog box that sits on top of the main content.
+
+  ## Examples
+
+      <.uk_modal id="my-modal">
+        <:header>
+          <.uk_modal_title>Modal Title</.uk_modal_title>
+        </:header>
+        <:body>
+          <p>Modal content goes here.</p>
+        </:body>
+        <:footer class="uk-text-right">
+          <.uk_button class="uk-modal-close">Cancel</.uk_button>
+          <.uk_button variant="primary">Save</.uk_button>
+        </:footer>
+      </.uk_modal>
+
+  To trigger the modal, use `uk-toggle`:
+
+      <.uk_button uk_toggle="target: #my-modal">Open Modal</.uk_button>
+
+  To trigger the modal from an assign:
+
+      <.uk_modal id="my-modal" show={@show_modal} on_close="close_modal">
+        ...
+      </.uk_modal>
+  """
+  attr :id, :string, required: true, doc: "The DOM ID of the modal."
+  attr :center, :boolean, default: false, doc: "Whether to vertically center the modal."
+
+  attr :container, :any,
+    default: false,
+    doc: "Target container. Defaults to false for LiveView compatibility (stays in DOM)."
+
+  attr :full, :boolean, default: false, doc: "Whether to make the modal full screen."
+
+  attr :esc_close, :boolean,
+    default: true,
+    doc: "Whether the modal can be closed by pressing the Esc key."
+
+  attr :bg_close, :boolean,
+    default: true,
+    doc: "Whether the modal can be closed by clicking on the background."
+
+  attr :stack, :boolean, default: false, doc: "Whether modals should stack."
+  attr :show, :boolean, default: nil, doc: "Programmatically show/hide the modal."
+  attr :on_close, :string, default: nil, doc: "Event to push when modal is closed manually."
+  attr :class, :string, default: nil, doc: "Additional CSS classes for the modal container."
+  attr :dialog_class, :string, default: nil, doc: "Additional CSS classes for the modal dialog."
+  attr :rest, :global, doc: "Global attributes for the modal container."
+
+  slot :header, doc: "The modal header content."
+  slot :body, doc: "The modal body content."
+
+  slot :footer, doc: "The modal footer content." do
+    attr :class, :string, doc: "Additional CSS classes for the footer."
+  end
+
+  slot :close, doc: "Custom close button. If not provided, a default one is included."
+  slot :inner_block, doc: "Inner content, if not using structured slots."
+
+  def uk_modal(assigns) do
+    modal_opts =
+      [
+        assigns.esc_close == false && "esc-close: false",
+        assigns.bg_close == false && "bg-close: false",
+        assigns.stack == true && "stack: true",
+        "container: #{assigns.container}"
+      ]
+      |> Enum.reject(&(!&1))
+      |> Enum.join("; ")
+
+    rest = assigns.rest
+
+    rest =
+      if assigns.show == nil do
+        rest
+      else
+        rest
+        |> Map.put(:"data-show", to_string(assigns.show))
+        |> Map.put(:"phx-hook", rest[:"phx-hook"] || "Modal")
+      end
+
+    rest =
+      if assigns.on_close do
+        Map.put(rest, :"data-on-close", assigns.on_close)
+      else
+        rest
+      end
+
+    assigns =
+      assigns
+      |> assign(:modal_opts, modal_opts)
+      |> assign(:rest, rest)
+
+    ~H"""
+    <div
+      id={@id}
+      uk-modal={if @modal_opts == "", do: true, else: @modal_opts}
+      class={[
+        "uk-modal",
+        @full && "uk-modal-full",
+        @center && "uk-flex-top",
+        @class
+      ]}
+      {@rest}
+    >
+      <div class={[
+        "uk-modal-dialog",
+        @container == true && "uk-modal-container",
+        @center && "uk-margin-auto-vertical",
+        @dialog_class
+      ]}>
+        <%= if @close != [] do %>
+          {render_slot(@close)}
+        <% else %>
+          <button
+            class={if @full, do: "uk-modal-close-full", else: "uk-modal-close-default"}
+            type="button"
+            uk-close
+          >
+          </button>
+        <% end %>
+
+        <div :if={@header != []} class="uk-modal-header">
+          {render_slot(@header)}
+        </div>
+
+        <div :if={@body != []} class="uk-modal-body">
+          {render_slot(@body)}
+        </div>
+
+        {render_slot(@inner_block)}
+
+        <div :if={@footer != []} class={["uk-modal-footer", Enum.at(@footer, 0)[:class]]}>
+          {render_slot(@footer)}
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a title for the modal component.
+  """
+  attr :class, :string, default: nil, doc: "Additional CSS classes."
+  attr :rest, :global, doc: "Global attributes."
+  slot :inner_block, required: true, doc: "The title text."
+
+  def uk_modal_title(assigns) do
+    ~H"""
+    <h2 class={["uk-modal-title", @class]} {@rest}>
+      {render_slot(@inner_block)}
+    </h2>
+    """
   end
 end
