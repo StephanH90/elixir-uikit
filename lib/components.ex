@@ -326,4 +326,57 @@ defmodule Uikit.Components do
     </div>
     """
   end
+
+  @doc """
+  Renders a UIkit icon.
+
+  Uses the UIkit icon system to display SVG icons. Can be rendered as a standalone icon,
+  a link, or an icon button.
+
+  ## Examples
+
+      <.uk_icon name="check" />
+      <.uk_icon name="heart" ratio={2} />
+      <.uk_icon name="trash" button href="/delete" />
+      <.uk_icon name="twitter" href="https://twitter.com" />
+  """
+  attr :name, :string, required: true, doc: "The name of the icon."
+  attr :ratio, :any, default: 1, doc: "The size multiplier of the icon."
+  attr :button, :boolean, default: false, doc: "Whether to render as an icon button."
+  attr :class, :string, default: nil, doc: "Additional CSS classes."
+  attr :rest, :global, include: ~w(href navigate patch method download uk-icon), doc: "Global attributes or link-specific attributes."
+
+  def uk_icon(assigns) do
+    icon_opts =
+      [
+        "icon: #{assigns.name}",
+        assigns.ratio != 1 && "ratio: #{assigns.ratio}"
+      ]
+      |> Enum.reject(&(!&1))
+      |> Enum.join("; ")
+
+    is_link = assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch]
+
+    class = [
+      assigns.button && "uk-icon-button",
+      is_link && !assigns.button && "uk-icon-link",
+      assigns.class
+    ]
+
+    assigns =
+      assigns
+      |> assign(:icon_opts, icon_opts)
+      |> assign(:class, class)
+      |> assign(:rest, Map.put(assigns.rest, :"uk-icon", icon_opts))
+
+    if is_link do
+      ~H"""
+      <.link class={@class} {@rest}></.link>
+      """
+    else
+      ~H"""
+      <span class={@class} {@rest} />
+      """
+    end
+  end
 end

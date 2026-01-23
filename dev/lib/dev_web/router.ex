@@ -17,7 +17,7 @@ defmodule DevWeb.Router do
   scope "/", DevWeb do
     pipe_through(:browser)
 
-    get("/", PageController, :home)
+    live("/", HomeLive)
     live("/sortable", SortableLive)
   end
 

@@ -51,7 +51,7 @@ defmodule Dev.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
-      {:uikit, path: ".."},
+      {:elixir_uikit, path: ".."},
       {:dart_sass, "~> 0.7", only: [:dev]}
     ]
   end
