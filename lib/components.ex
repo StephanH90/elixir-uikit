@@ -591,4 +591,39 @@ defmodule Uikit.Components do
     </span>
     """
   end
+
+  @doc """
+  Renders a UIkit spinner.
+
+  Spinners are used to indicate loading states.
+
+  ## Examples
+
+      <.uk_spinner />
+      <.uk_spinner ratio={2} />
+  """
+  attr :ratio, :any, default: 1, doc: "The size multiplier of the spinner."
+  attr :class, :string, default: nil, doc: "Additional CSS classes."
+  attr :rest, :global, doc: "Global attributes."
+
+  def uk_spinner(assigns) do
+    spinner_opts =
+      [
+        assigns.ratio != 1 && "ratio: #{assigns.ratio}"
+      ]
+      |> Enum.reject(&(!&1))
+      |> Enum.join("; ")
+
+    assigns =
+      assigns
+      |> assign(:spinner_opts, spinner_opts)
+      |> assign(
+        :rest,
+        Map.put(assigns.rest, :"uk-spinner", if(spinner_opts == "", do: true, else: spinner_opts))
+      )
+
+    ~H"""
+    <div class={@class} {@rest} />
+    """
+  end
 end

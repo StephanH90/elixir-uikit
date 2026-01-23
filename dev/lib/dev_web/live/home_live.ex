@@ -2,7 +2,7 @@ defmodule DevWeb.HomeLive do
   use DevWeb, :live_view
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, items: [], show_programmatic_modal: false)}
+    {:ok, assign(socket, items: [], show_programmatic_modal: false, loading: false)}
   end
 
   def render(assigns) do
@@ -21,16 +21,17 @@ defmodule DevWeb.HomeLive do
               <li><a href="#badge">Badge</a></li>
               <li><a href="#label">Label</a></li>
               <li><a href="#card">Card</a></li>
-              
               <li><a href="#container">Container</a></li>
               <li><a href="#grid">Grid</a></li>
               <li><a href="#icon">Icon</a></li>
               <li><a href="#modal">Modal</a></li>
               <li><a href="#sortable">Sortable</a></li>
+              <li><a href="#spinner">Spinner</a></li>
               <li class="uk-nav-divider"></li>
               <li class="uk-nav-header">Interactive Tests</li>
               <li><a href="#dynamic-content">Dynamic Content</a></li>
               <li><a href="#programmatic-modal">Programmatic Modal</a></li>
+              <li><a href="#async-loading">Async Loading</a></li>
             </ul>
           </div>
 
@@ -235,6 +236,17 @@ defmodule DevWeb.HomeLive do
               </div>
             </section>
 
+            <section id="spinner" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom">Spinner</h2>
+              <div class="uk-card uk-card-default uk-card-body">
+                <div class="uk-flex uk-flex-middle gap-4">
+                  <.uk_spinner />
+                  <.uk_spinner ratio={2} />
+                  <.uk_spinner ratio={3} />
+                </div>
+              </div>
+            </section>
+
             <hr class="uk-divider-icon" />
 
             <section id="dynamic-content" class="uk-margin-large-bottom">
@@ -255,6 +267,29 @@ defmodule DevWeb.HomeLive do
                         </div>
                       </div>
                     </.uk_grid>
+                  </div>
+                </:body>
+              </.uk_card>
+            </section>
+
+            <section id="async-loading" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom text-primary">Interactive: Async Loading</h2>
+              <.uk_card variant="default">
+                <:body>
+                  <p>Simulate a server-side loading state using a spinner controlled by an assign.</p>
+                  <.uk_button phx-click="start_loading" variant="primary" disabled={@loading}>
+                    {if @loading, do: "Loading...", else: "Start Async Task"}
+                  </.uk_button>
+
+                  <div class="uk-margin-top uk-height-small uk-flex uk-flex-center uk-flex-middle border">
+                    <%= if @loading do %>
+                      <div class="uk-text-center">
+                        <.uk_spinner ratio={1.5} />
+                        <div class="uk-text-meta uk-margin-small-top">Processing on server...</div>
+                      </div>
+                    <% else %>
+                      <div class="uk-text-muted">Task results will appear here.</div>
+                    <% end %>
                   </div>
                 </:body>
               </.uk_card>
@@ -308,6 +343,15 @@ defmodule DevWeb.HomeLive do
     }
 
     {:noreply, assign(socket, items: [new_item | socket.assigns.items])}
+  end
+
+  def handle_event("start_loading", _params, socket) do
+    Process.send_after(self(), :finished_loading, 2000)
+    {:noreply, assign(socket, loading: true)}
+  end
+
+  def handle_info(:finished_loading, socket) do
+    {:noreply, assign(socket, loading: false)}
   end
 
   def handle_event("open_programmatic_modal", _params, socket) do
