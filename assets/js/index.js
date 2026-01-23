@@ -3,7 +3,15 @@ import UIkit from "uikit";
 const Sortable = {
   mounted() {
     UIkit.util.on(this.el, "moved", (e) => {
-      const items = Array.from(this.el.children).map((child) => child.id);
+      const items = Array.from(this.el.children).map((child) => {
+        if (!child.id) {
+          console.warn(
+            `[elixir_uikit] Sortable item is missing an ID. Reordering will fail to sync correctly with LiveView.`,
+            child
+          );
+        }
+        return child.id;
+      });
       const eventName = this.el.dataset.event || "uikit:reorder";
       this.pushEvent(eventName, { items: items });
     });
@@ -32,8 +40,6 @@ const Modal = {
     if (show) {
       this.modal.show();
     } else {
-      // We only call hide if UIkit thinks it's shown, 
-      // otherwise it might trigger 'hidden' event loops.
       this.modal.hide();
     }
   }
@@ -42,6 +48,29 @@ const Modal = {
 const Switcher = {
   mounted() {
     this.switcher = UIkit.switcher(this.el);
+    
+    // Check for stable IDs on children in development
+    Array.from(this.el.children).forEach((child, index) => {
+      if (!child.id) {
+        console.warn(
+          `[elixir_uikit] Switcher toggle (item ${index}) is missing a stable ID. This will cause DOM patching issues in LiveView.`,
+          child
+        );
+      }
+    });
+
+    // Notify server when switcher changes (e.g. user clicks a tab)
+    UIkit.util.on(this.el, "show", (e) => {
+      const toggles = Array.from(this.el.children);
+      const index = toggles.indexOf(e.target);
+      const active = parseInt(this.el.dataset.active);
+      
+      if (index !== -1 && index !== active) {
+        const eventName = this.el.dataset.onChange || "uikit:switcher_changed";
+        this.pushEvent(eventName, { id: this.el.id, index: index });
+      }
+    });
+
     this.handleAttr();
   },
   updated() {
@@ -50,7 +79,9 @@ const Switcher = {
   handleAttr() {
     if (this.el.dataset.active !== undefined) {
       const index = parseInt(this.el.dataset.active);
-      this.switcher.show(index);
+      if (this.switcher && this.switcher.index !== index) {
+        this.switcher.show(index);
+      }
     }
   }
 };

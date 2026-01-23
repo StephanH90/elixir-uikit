@@ -36,56 +36,46 @@ defmodule Uikit.Components do
       <.uk_button variant="danger" size="small">Small Danger</.uk_button>
       <.uk_button href="/home">Link Button</.uk_button>
   """
-  attr :variant, :string,
+  attr(:variant, :string,
     default: "default",
     values: ~w(default primary secondary danger text link),
-    doc: "The visual style of the button."
+    doc: "the visual style of the button"
+  )
 
-  attr :size, :string,
+  attr(:size, :string,
     default: nil,
     values: [nil, "small", "large"],
-    doc: "The size of the button."
+    doc: "the size of the button"
+  )
 
-  attr :type, :string,
+  attr(:type, :string,
     default: "button",
-    doc: "The HTML type of the button (submit, reset, button)."
+    doc: "the HTML type of the button (submit, reset, button)"
+  )
 
-  attr :uk_toggle, :any, default: nil, doc: "The target modal or toggleable element."
-  attr :disabled, :boolean, default: false, doc: "Whether the button is disabled."
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
+  attr(:uk_toggle, :any, default: nil, doc: "the target modal or toggleable element")
+  attr(:disabled, :boolean, default: false, doc: "whether the button is disabled")
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
 
-  attr :rest, :global,
+  attr(:rest, :global,
     include: ~w(href navigate patch method download uk-icon uk-toggle),
-    doc: "Global attributes or link-specific attributes."
+    doc: "the arbitrary HTML attributes to add to the button container"
+  )
 
-  slot :inner_block, required: true, doc: "The content of the button."
+  slot(:inner_block, required: true, doc: "the content of the button")
 
   def uk_button(assigns) do
-    class = [
-      "uk-button",
-      "uk-button-#{assigns.variant}",
-      assigns.size && "uk-button-#{assigns.size}",
-      assigns.class
-    ]
-
-    rest =
-      if assigns.uk_toggle do
-        Map.put(assigns.rest, :"uk-toggle", assigns.uk_toggle)
-      else
-        assigns.rest
-      end
-
-    rest =
-      if assigns.disabled do
-        Map.put(rest, :disabled, true)
-      else
-        rest
-      end
-
     assigns =
       assigns
-      |> assign(:class, class)
-      |> assign(:rest, rest)
+      |> assign_new(:class, fn ->
+        [
+          "uk-button",
+          "uk-button-#{assigns.variant}",
+          assigns.size && "uk-button-#{assigns.size}",
+          assigns.class
+        ]
+      end)
+      |> assign(:rest, prepare_button_rest(assigns))
 
     if assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch] do
       ~H"""
@@ -102,6 +92,23 @@ defmodule Uikit.Components do
     end
   end
 
+  defp prepare_button_rest(assigns) do
+    rest = assigns.rest
+
+    rest =
+      if assigns.uk_toggle do
+        Map.put(rest, :"uk-toggle", assigns.uk_toggle)
+      else
+        rest
+      end
+
+    if assigns.disabled do
+      Map.put(rest, :disabled, true)
+    else
+      rest
+    end
+  end
+
   @doc """
   Renders a UIkit badge.
 
@@ -112,9 +119,9 @@ defmodule Uikit.Components do
       <.uk_badge>1</.uk_badge>
       <.uk_badge class="uk-label-success">100</.uk_badge>
   """
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
-  slot :inner_block, required: true, doc: "The content of the badge."
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the badge container")
+  slot(:inner_block, required: true, doc: "the content of the badge")
 
   def uk_badge(assigns) do
     ~H"""
@@ -143,24 +150,31 @@ defmodule Uikit.Components do
         </:footer>
       </.uk_card>
   """
-  attr :variant, :string,
+  attr(:variant, :string,
     default: "default",
     values: ~w(default primary secondary),
-    doc: "The style variant of the card."
+    doc: "the style variant of the card"
+  )
 
-  attr :size, :string,
+  attr(:size, :string,
     default: nil,
     values: [nil, "small", "large"],
-    doc: "The padding size of the card."
+    doc: "the padding size of the card"
+  )
 
-  attr :hover, :boolean, default: false, doc: "Whether to add a hover effect."
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
+  attr(:hover, :boolean, default: false, doc: "whether to add a hover effect")
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the card container")
 
-  slot :header, doc: "The card header content."
-  slot :body, doc: "The card body content."
-  slot :footer, doc: "The card footer content."
-  slot :inner_block, doc: "Inner content, if not using structured slots."
+  slot(:header, doc: "the card header content")
+  slot(:body, doc: "the card body content")
+
+  slot(:footer, doc: "the card footer content") do
+    attr(:class, :any, doc: "additional CSS classes for the footer")
+  end
+
+  slot(:close, doc: "custom close button. If not provided, a default one is included")
+  slot(:inner_block, doc: "inner content, if not using structured slots")
 
   def uk_card(assigns) do
     ~H"""
@@ -184,7 +198,7 @@ defmodule Uikit.Components do
 
       {render_slot(@inner_block)}
 
-      <div :if={@footer != []} class="uk-card-footer">
+      <div :if={@footer != []} class={["uk-card-footer", Enum.at(@footer, 0)[:class]]}>
         {render_slot(@footer)}
       </div>
     </div>
@@ -194,9 +208,9 @@ defmodule Uikit.Components do
   @doc """
   Renders a title for the card component.
   """
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
-  slot :inner_block, required: true, doc: "The title text."
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the title")
+  slot(:inner_block, required: true, doc: "the title text")
 
   def uk_card_title(assigns) do
     ~H"""
@@ -217,14 +231,15 @@ defmodule Uikit.Components do
         Content
       </.uk_container>
   """
-  attr :size, :string,
+  attr(:size, :string,
     default: nil,
     values: [nil, "xsmall", "small", "large", "xlarge", "expand"],
-    doc: "The max-width of the container."
+    doc: "the max-width of the container"
+  )
 
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
-  slot :inner_block, required: true, doc: "The container content."
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the container")
+  slot(:inner_block, required: true, doc: "the container content")
 
   def uk_container(assigns) do
     ~H"""
@@ -232,6 +247,49 @@ defmodule Uikit.Components do
       class={[
         "uk-container",
         @size && "uk-container-#{@size}",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc """
+  Renders a UIkit section.
+
+  Sections are used to create horizontal layout blocks.
+
+  ## Examples
+
+      <.uk_section variant="primary">
+        Content
+      </.uk_section>
+  """
+  attr(:variant, :string,
+    default: "default",
+    values: ~w(default muted primary secondary),
+    doc: "the color variant of the section"
+  )
+
+  attr(:size, :string,
+    default: nil,
+    values: [nil, "xsmall", "small", "large", "xlarge", "remove-vertical"],
+    doc: "the vertical padding size"
+  )
+
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the section container")
+  slot(:inner_block, required: true, doc: "the section content")
+
+  def uk_section(assigns) do
+    ~H"""
+    <div
+      class={[
+        "uk-section",
+        "uk-section-#{@variant}",
+        @size && "uk-section-#{@size}",
         @class
       ]}
       {@rest}
@@ -253,22 +311,24 @@ defmodule Uikit.Components do
         <div>Item 2</div>
       </.uk_grid>
   """
-  attr :gap, :string,
+  attr(:gap, :string,
     default: nil,
     values: [nil, "small", "medium", "large", "collapse"],
-    doc: "The grid gap size."
+    doc: "the grid gap size"
+  )
 
-  attr :divider, :boolean, default: false, doc: "Whether to show a divider between cells."
-  attr :match, :boolean, default: false, doc: "Whether to match the height of grid cells."
+  attr(:divider, :boolean, default: false, doc: "whether to show a divider between cells")
+  attr(:match, :boolean, default: false, doc: "whether to match the height of grid cells")
 
-  attr :masonry, :string,
+  attr(:masonry, :string,
     default: nil,
     values: [nil, "pack", "next", "true"],
-    doc: "Enables masonry layout."
+    doc: "enables masonry layout"
+  )
 
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
-  slot :inner_block, required: true, doc: "The grid items."
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the grid container")
+  slot(:inner_block, required: true, doc: "the grid items")
 
   def uk_grid(assigns) do
     grid_opts =
@@ -300,7 +360,13 @@ defmodule Uikit.Components do
   @doc """
   Renders a UIkit sortable container.
 
-  Enables drag and drop reordering of items. Requires the `Sortable` hook for LiveView integration.
+  Enables drag and drop reordering of items. 
+
+  ### Important: IDs and LiveView
+  To ensure reordering works correctly with LiveView:
+  1. **Provide an `id`** to the `<.uk_sortable>` container.
+  2. **Every child element** inside the sortable container **must have a unique `id`**.
+  3. Use the `Sortable` hook for server-side integration.
 
   ## Examples
 
@@ -309,16 +375,16 @@ defmodule Uikit.Components do
         <div id="item-2">Item 2</div>
       </.uk_sortable>
   """
-  attr :id, :string, required: true, doc: "The DOM ID of the container (required for hooks)."
-  attr :group, :string, default: nil, doc: "The group name for dragging between lists."
-  attr :animation, :integer, default: nil, doc: "Animation duration in milliseconds."
-  attr :threshold, :integer, default: nil, doc: "Mouse move threshold before dragging starts."
-  attr :handle, :string, default: nil, doc: "Selector for the drag handle."
-  attr :cls_custom, :string, default: nil, doc: "Custom class for the dragged item."
-  attr :grid, :boolean, default: false, doc: "Whether to apply the grid component behavior."
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes (e.g. phx-hook)."
-  slot :inner_block, required: true, doc: "The sortable items."
+  attr(:id, :string, required: true, doc: "the DOM ID of the container (required for hooks)")
+  attr(:group, :string, default: nil, doc: "the group name for dragging between lists")
+  attr(:animation, :integer, default: nil, doc: "animation duration in milliseconds")
+  attr(:threshold, :integer, default: nil, doc: "mouse move threshold before dragging starts")
+  attr(:handle, :string, default: nil, doc: "selector for the drag handle")
+  attr(:cls_custom, :string, default: nil, doc: "custom class for the dragged item")
+  attr(:grid, :boolean, default: false, doc: "whether to apply the grid component behavior")
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the sortable container")
+  slot(:inner_block, required: true, doc: "the sortable items")
 
   def uk_sortable(assigns) do
     sortable_opts =
@@ -360,48 +426,55 @@ defmodule Uikit.Components do
       <.uk_icon name="trash" button href="/delete" />
       <.uk_icon name="twitter" href="https://twitter.com" />
   """
-  attr :name, :string, required: true, doc: "The name of the icon."
-  attr :ratio, :any, default: 1, doc: "The size multiplier of the icon."
-  attr :button, :boolean, default: false, doc: "Whether to render as an icon button."
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
+  attr(:name, :string, required: true, doc: "the name of the icon")
+  attr(:ratio, :any, default: 1, doc: "the size multiplier of the icon")
+  attr(:id, :string, default: nil, doc: "the DOM ID of the icon")
+  attr(:button, :boolean, default: false, doc: "whether to render as an icon button")
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
 
-  attr :rest, :global,
+  attr(:rest, :global,
     include: ~w(href navigate patch method download uk-icon uk-toggle),
-    doc: "Global attributes or link-specific attributes."
+    doc: "the arbitrary HTML attributes to add to the icon container"
+  )
 
   def uk_icon(assigns) do
-    icon_opts =
-      [
-        "icon: #{assigns.name}",
-        assigns.ratio != 1 && "ratio: #{assigns.ratio}"
-      ]
-      |> Enum.reject(&(!&1))
-      |> Enum.join("; ")
+    assigns =
+      assigns
+      |> assign_new(:id, fn -> "uk-icon-#{System.unique_integer([:positive])}" end)
+      |> assign(:icon_opts, build_icon_opts(assigns))
+      |> assign(:class, build_icon_class(assigns))
 
+    assigns = assign(assigns, :rest, Map.put(assigns.rest, :"uk-icon", assigns.icon_opts))
+
+    if assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch] do
+      ~H"""
+      <.link id={@id} class={@class} phx-update="ignore" {@rest}></.link>
+      """
+    else
+      ~H"""
+      <span id={@id} class={@class} phx-update="ignore" {@rest} />
+      """
+    end
+  end
+
+  defp build_icon_opts(assigns) do
+    [
+      "icon: #{assigns.name}",
+      assigns.ratio != 1 && "ratio: #{assigns.ratio}"
+    ]
+    |> Enum.reject(&(!&1))
+    |> Enum.join("; ")
+  end
+
+  defp build_icon_class(assigns) do
     is_link = assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch]
 
-    class = [
+    [
       "uk-icon",
       assigns.button && "uk-icon-button",
       is_link && !assigns.button && "uk-icon-link",
       assigns.class
     ]
-
-    assigns =
-      assigns
-      |> assign(:icon_opts, icon_opts)
-      |> assign(:class, class)
-      |> assign(:rest, Map.put(assigns.rest, :"uk-icon", icon_opts))
-
-    if is_link do
-      ~H"""
-      <.link class={@class} {@rest}></.link>
-      """
-    else
-      ~H"""
-      <span class={@class} {@rest} />
-      """
-    end
   end
 
   @doc """
@@ -434,39 +507,42 @@ defmodule Uikit.Components do
         ...
       </.uk_modal>
   """
-  attr :id, :string, required: true, doc: "The DOM ID of the modal."
-  attr :center, :boolean, default: false, doc: "Whether to vertically center the modal."
+  attr(:id, :string, required: true, doc: "the DOM ID of the modal")
+  attr(:center, :boolean, default: false, doc: "whether to vertically center the modal")
 
-  attr :container, :any,
+  attr(:container, :any,
     default: false,
-    doc: "Target container. Defaults to false for LiveView compatibility (stays in DOM)."
+    doc: "target container. Defaults to false for LiveView compatibility (stays in DOM)"
+  )
 
-  attr :full, :boolean, default: false, doc: "Whether to make the modal full screen."
+  attr(:full, :boolean, default: false, doc: "whether to make the modal full screen")
 
-  attr :esc_close, :boolean,
+  attr(:esc_close, :boolean,
     default: true,
-    doc: "Whether the modal can be closed by pressing the Esc key."
+    doc: "whether the modal can be closed by pressing the Esc key"
+  )
 
-  attr :bg_close, :boolean,
+  attr(:bg_close, :boolean,
     default: true,
-    doc: "Whether the modal can be closed by clicking on the background."
+    doc: "whether the modal can be closed by clicking on the background"
+  )
 
-  attr :stack, :boolean, default: false, doc: "Whether modals should stack."
-  attr :show, :boolean, default: nil, doc: "Programmatically show/hide the modal."
-  attr :on_close, :string, default: nil, doc: "Event to push when modal is closed manually."
-  attr :class, :string, default: nil, doc: "Additional CSS classes for the modal container."
-  attr :dialog_class, :string, default: nil, doc: "Additional CSS classes for the modal dialog."
-  attr :rest, :global, doc: "Global attributes for the modal container."
+  attr(:stack, :boolean, default: false, doc: "whether modals should stack")
+  attr(:show, :boolean, default: nil, doc: "programmatically show/hide the modal")
+  attr(:on_close, :string, default: nil, doc: "event to push when modal is closed manually")
+  attr(:class, :any, default: nil, doc: "additional CSS classes for the modal container")
+  attr(:dialog_class, :any, default: nil, doc: "additional CSS classes for the modal dialog")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the modal container")
 
-  slot :header, doc: "The modal header content."
-  slot :body, doc: "The modal body content."
+  slot(:header, doc: "the modal header content")
+  slot(:body, doc: "the modal body content")
 
-  slot :footer, doc: "The modal footer content." do
-    attr :class, :string, doc: "Additional CSS classes for the footer."
+  slot(:footer, doc: "the modal footer content") do
+    attr(:class, :any, doc: "additional CSS classes for the footer")
   end
 
-  slot :close, doc: "Custom close button. If not provided, a default one is included."
-  slot :inner_block, doc: "Inner content, if not using structured slots."
+  slot(:close, doc: "custom close button. If not provided, a default one is included")
+  slot(:inner_block, doc: "inner content, if not using structured slots")
 
   def uk_modal(assigns) do
     modal_opts =
@@ -479,28 +555,10 @@ defmodule Uikit.Components do
       |> Enum.reject(&(!&1))
       |> Enum.join("; ")
 
-    rest = assigns.rest
-
-    rest =
-      if assigns.show == nil do
-        rest
-      else
-        rest
-        |> Map.put(:"data-show", to_string(assigns.show))
-        |> Map.put(:"phx-hook", rest[:"phx-hook"] || "Modal")
-      end
-
-    rest =
-      if assigns.on_close do
-        Map.put(rest, :"data-on-close", assigns.on_close)
-      else
-        rest
-      end
-
     assigns =
       assigns
       |> assign(:modal_opts, modal_opts)
-      |> assign(:rest, rest)
+      |> assign(:rest, prepare_modal_rest(assigns))
 
     ~H"""
     <div
@@ -549,12 +607,31 @@ defmodule Uikit.Components do
     """
   end
 
+  defp prepare_modal_rest(assigns) do
+    rest = assigns.rest
+
+    rest =
+      if assigns.show == nil do
+        rest
+      else
+        rest
+        |> Map.put(:"data-show", to_string(assigns.show))
+        |> Map.put(:"phx-hook", rest[:"phx-hook"] || "Modal")
+      end
+
+    if assigns.on_close do
+      Map.put(rest, :"data-on-close", assigns.on_close)
+    else
+      rest
+    end
+  end
+
   @doc """
   Renders a title for the modal component.
   """
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
-  slot :inner_block, required: true, doc: "The title text."
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the title")
+  slot(:inner_block, required: true, doc: "the title text")
 
   def uk_modal_title(assigns) do
     ~H"""
@@ -576,14 +653,15 @@ defmodule Uikit.Components do
       <.uk_label variant="warning">Warning</.uk_label>
       <.uk_label variant="danger">Danger</.uk_label>
   """
-  attr :variant, :string,
+  attr(:variant, :string,
     default: nil,
     values: [nil, "success", "warning", "danger"],
-    doc: "The visual style of the label."
+    doc: "the visual style of the label"
+  )
 
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
-  slot :inner_block, required: true, doc: "The content of the label."
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the label container")
+  slot(:inner_block, required: true, doc: "the content of the label")
 
   def uk_label(assigns) do
     ~H"""
@@ -610,29 +688,39 @@ defmodule Uikit.Components do
       <.uk_spinner />
       <.uk_spinner ratio={2} />
   """
-  attr :ratio, :any, default: 1, doc: "The size multiplier of the spinner."
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
+  attr(:ratio, :any, default: 1, doc: "the size multiplier of the spinner")
+  attr(:id, :string, default: nil, doc: "the DOM ID of the spinner")
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the spinner container")
 
   def uk_spinner(assigns) do
-    spinner_opts =
-      [
-        assigns.ratio != 1 && "ratio: #{assigns.ratio}"
-      ]
-      |> Enum.reject(&(!&1))
-      |> Enum.join("; ")
-
     assigns =
       assigns
-      |> assign(:spinner_opts, spinner_opts)
-      |> assign(
+      |> assign_new(:id, fn -> "uk-spinner-#{System.unique_integer([:positive])}" end)
+      |> assign(:spinner_opts, build_spinner_opts(assigns))
+
+    assigns =
+      assign(
+        assigns,
         :rest,
-        Map.put(assigns.rest, :"uk-spinner", if(spinner_opts == "", do: true, else: spinner_opts))
+        Map.put(
+          assigns.rest,
+          :"uk-spinner",
+          if(assigns.spinner_opts == "", do: true, else: assigns.spinner_opts)
+        )
       )
 
     ~H"""
-    <div class={@class} {@rest} />
+    <div id={@id} class={@class} phx-update="ignore" {@rest}></div>
     """
+  end
+
+  defp build_spinner_opts(assigns) do
+    [
+      assigns.ratio != 1 && "ratio: #{assigns.ratio}"
+    ]
+    |> Enum.reject(&(!&1))
+    |> Enum.join("; ")
   end
 
   @doc """
@@ -640,33 +728,89 @@ defmodule Uikit.Components do
 
   Subnavs are used to create navigation for smaller sections of a page.
 
+  ### Important: IDs and LiveView
+  When using `switcher` or `active` attributes, UIkit and LiveView both manipulate the DOM.
+  To prevent "ghost" nodes or duplicated elements during patching, **always provide a unique `id`**
+  to the `<.uk_subnav>` component. The component will then automatically generate stable IDs
+  for all nested items and links.
+
   ## Examples
 
-      <.uk_subnav pill>
-        <:item href="#1" active>Item 1</:item>
+      <.uk_subnav id="my-subnav" pill switcher="connect: #my-content">
+        <:item href="#1">Item 1</:item>
         <:item href="#2">Item 2</:item>
-        <:item disabled>Item 3</:item>
       </.uk_subnav>
   """
-  attr :divider, :boolean, default: false, doc: "Whether to show a divider between items."
-  attr :pill, :boolean, default: false, doc: "Whether to show items as pills."
-  attr :switcher, :any, default: false, doc: "Options for uk-switcher."
+  attr(:divider, :boolean, default: false, doc: "whether to show a divider between items")
+  attr(:pill, :boolean, default: false, doc: "whether to show items as pills")
+  attr(:switcher, :any, default: false, doc: "options for uk-switcher")
 
-  attr :active, :integer,
+  attr(:active, :integer,
     default: nil,
-    doc: "The index of the active item (programmatic control)."
+    doc: "the index of the active item (programmatic control)"
+  )
 
-  attr :class, :string, default: nil, doc: "Additional CSS classes for the list."
-  attr :rest, :global, doc: "Global attributes for the list."
+  attr(:id, :string, required: true, doc: "the DOM ID of the subnav (required for stability)")
+  attr(:on_change, :string, default: nil, doc: "event to push when switcher changes")
+  attr(:class, :any, default: nil, doc: "additional CSS classes for the list")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the subnav container")
 
-  slot :item, doc: "The navigation items." do
-    attr :href, :string, doc: "The link destination."
-    attr :active, :boolean, doc: "Whether the item is currently active."
-    attr :disabled, :boolean, doc: "Whether the item is disabled."
-    attr :class, :string, doc: "Additional CSS classes for the item container (li)."
+  slot(:item, doc: "the navigation items") do
+    attr(:id, :string,
+      doc: "the DOM ID of the item. Falling back to an auto-generated ID if the parent has one."
+    )
+
+    attr(:href, :string, doc: "the link destination")
+    attr(:active, :boolean, doc: "whether the item is currently active")
+    attr(:disabled, :boolean, doc: "whether the item is disabled")
+    attr(:class, :any, doc: "additional CSS classes for the item container (li)")
   end
 
   def uk_subnav(assigns) do
+    assigns = assign(assigns, :rest, prepare_subnav_rest(assigns))
+
+    ~H"""
+    <ul
+      id={@id}
+      class={[
+        "uk-subnav",
+        @divider && "uk-subnav-divider",
+        @pill && "uk-subnav-pill",
+        @class
+      ]}
+      {@rest}
+    >
+      <li
+        :for={{item, index} <- Enum.with_index(@item)}
+        id={item[:id] || (@id && "#{@id}-item-#{index}")}
+        class={[
+          item[:active] && "uk-active",
+          item[:disabled] && "uk-disabled",
+          item[:class]
+        ]}
+      >
+        <%= if item[:disabled] do %>
+          <span
+            id={item[:id] && "#{item[:id]}-link"}
+            {Map.drop(item, [:id, :href, :active, :disabled, :class, :inner_block])}
+          >
+            {render_slot(item)}
+          </span>
+        <% else %>
+          <.link
+            id={item[:id] && "#{item[:id]}-link"}
+            href={item[:href]}
+            {Map.drop(item, [:id, :href, :active, :disabled, :class, :inner_block])}
+          >
+            {render_slot(item)}
+          </.link>
+        <% end %>
+      </li>
+    </ul>
+    """
+  end
+
+  defp prepare_subnav_rest(assigns) do
     rest = assigns.rest
 
     rest =
@@ -689,49 +833,23 @@ defmodule Uikit.Components do
         |> Map.put(:"phx-hook", rest[:"phx-hook"] || "Switcher")
       end
 
-    assigns = assign(assigns, :rest, rest)
-
-    ~H"""
-    <ul
-      class={[
-        "uk-subnav",
-        @divider && "uk-subnav-divider",
-        @pill && "uk-subnav-pill",
-        @class
-      ]}
-      {@rest}
-    >
-      <li
-        :for={item <- @item}
-        class={[
-          item[:active] && "uk-active",
-          item[:disabled] && "uk-disabled",
-          item[:class]
-        ]}
-      >
-        <%= if item[:disabled] do %>
-          <span {Map.drop(item, [:href, :active, :disabled, :class, :inner_block])}>
-            {render_slot(item)}
-          </span>
-        <% else %>
-          <.link
-            href={item[:href]}
-            {Map.drop(item, [:href, :active, :disabled, :class, :inner_block])}
-          >
-            {render_slot(item)}
-          </.link>
-        <% end %>
-      </li>
-    </ul>
-    """
+    if assigns.on_change do
+      Map.put(rest, :"data-on-change", assigns.on_change)
+    else
+      rest
+    end
   end
 
   @doc """
   Renders a UIkit switcher content container.
 
+  ### Important: IDs
+  The `id` provided here must match the `connect` selector used in the corresponding
+  navigation component (e.g., `<.uk_subnav switcher="connect: #my-id">`).
+
   ## Examples
 
-      <.uk_subnav switcher="connect: #my-switcher">
+      <.uk_subnav id="my-nav" switcher="connect: #my-switcher">
         <:item href="#">Item 1</:item>
         <:item href="#">Item 2</:item>
       </.uk_subnav>
@@ -741,11 +859,11 @@ defmodule Uikit.Components do
         <li>Content 2</li>
       </.uk_switcher>
   """
-  attr :id, :string, required: true, doc: "The DOM ID of the switcher."
-  attr :animation, :string, default: nil, doc: "Animation modifier."
-  attr :class, :string, default: nil, doc: "Additional CSS classes."
-  attr :rest, :global, doc: "Global attributes."
-  slot :inner_block, required: true, doc: "The content panes (li elements)."
+  attr(:id, :string, required: true, doc: "the DOM ID of the switcher")
+  attr(:animation, :string, default: nil, doc: "animation modifier")
+  attr(:class, :any, default: nil, doc: "additional CSS classes")
+  attr(:rest, :global, doc: "the arbitrary HTML attributes to add to the switcher container")
+  slot(:inner_block, required: true, doc: "the content panes (li elements)")
 
   def uk_switcher(assigns) do
     ~H"""
