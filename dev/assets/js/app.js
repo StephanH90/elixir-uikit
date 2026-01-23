@@ -25,13 +25,22 @@ import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/dev"
 import topbar from "../vendor/topbar"
 
-import "../node_modules/uikit/dist/js/uikit.min.js"
+import UIkit from "uikit"
+import Icons from "uikit/dist/js/uikit-icons"
+import UikitHooks from "uikit_ex"
+
+UIkit.use(Icons)
+window.UIkit = UIkit
+
+const Hooks = {
+  ...UikitHooks
+}
 
 const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 const liveSocket = new LiveSocket("/live", Socket, {
   longPollFallbackMs: 2500,
   params: {_csrf_token: csrfToken},
-  hooks: {...colocatedHooks},
+  hooks: {...colocatedHooks, ...Hooks},
 })
 
 // Show progress bar on live navigation and form submits

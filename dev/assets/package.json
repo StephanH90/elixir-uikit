@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "uikit": "^3.25.6"
+    "uikit": "^3.25.6",
+    "uikit_ex": "file:../../"
   }
 }

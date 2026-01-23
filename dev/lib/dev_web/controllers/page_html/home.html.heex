@@ -14,7 +14,7 @@
           <div class="space-x-2">
             <.uk_button variant="primary">Primary</.uk_button>
             <.uk_button>Default</.uk_button>
-            <.uk_button variant="danger">Danger</.uk_button>
+            <.uk_button variant="danger" href="#">Link Button</.uk_button>
             <.uk_button variant="text">Text</.uk_button>
           </div>
         </:body>
@@ -88,6 +88,25 @@
         </:body>
         <:footer>
           <a href="https://getuikit.com/docs/grid" target="_blank" class="uk-button uk-button-text">Documentation</a>
+        </:footer>
+      </.uk_card>
+    </div>
+
+    <div>
+      <.uk_card hover>
+        <:header>
+          <.uk_card_title>Sortable</.uk_card_title>
+        </:header>
+        <:body>
+          <.uk_sortable group="sortable-group" class="uk-grid-small uk-child-width-1-3 uk-text-center" grid>
+             <div><div class="uk-card uk-card-default uk-card-body uk-padding-small">Item 1</div></div>
+             <div><div class="uk-card uk-card-default uk-card-body uk-padding-small">Item 2</div></div>
+             <div><div class="uk-card uk-card-default uk-card-body uk-padding-small">Item 3</div></div>
+          </.uk_sortable>
+        </:body>
+        <:footer>
+          <a href="https://getuikit.com/docs/sortable" target="_blank" class="uk-button uk-button-text">Documentation</a>
+          <.uk_button href="/sortable" variant="text">Live Demo</.uk_button>
         </:footer>
       </.uk_card>
     </div>
