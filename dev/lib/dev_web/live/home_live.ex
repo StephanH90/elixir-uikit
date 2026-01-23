@@ -2,7 +2,8 @@ defmodule DevWeb.HomeLive do
   use DevWeb, :live_view
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, items: [], show_programmatic_modal: false, loading: false)}
+    {:ok,
+     assign(socket, items: [], show_programmatic_modal: false, loading: false, switcher_index: 0)}
   end
 
   def render(assigns) do
@@ -28,12 +29,13 @@ defmodule DevWeb.HomeLive do
               <li><a href="#sortable">Sortable</a></li>
               <li><a href="#spinner">Spinner</a></li>
               <li><a href="#subnav">Subnav</a></li>
-              
+              <li><a href="#switcher">Switcher</a></li>
               <li class="uk-nav-divider"></li>
               <li class="uk-nav-header">Interactive Tests</li>
               <li><a href="#dynamic-content">Dynamic Content</a></li>
               <li><a href="#programmatic-modal">Programmatic Modal</a></li>
               <li><a href="#async-loading">Async Loading</a></li>
+              <li><a href="#programmatic-switcher">Programmatic Switcher</a></li>
             </ul>
           </div>
 
@@ -276,6 +278,29 @@ defmodule DevWeb.HomeLive do
               </div>
             </section>
 
+            <section id="switcher" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom">Switcher</h2>
+              <div class="uk-card uk-card-default uk-card-body">
+                <.uk_subnav pill switcher="connect: #switcher-demo">
+                  <:item href="#">Item 1</:item>
+                  <:item href="#">Item 2</:item>
+                  <:item href="#">Item 3</:item>
+                </.uk_subnav>
+
+                <.uk_switcher id="switcher-demo" class="uk-margin">
+                  <li>
+                    <div class="uk-alert uk-alert-primary">Content 1: Hello!</div>
+                  </li>
+                  <li>
+                    <div class="uk-alert uk-alert-success">Content 2: Welcome back!</div>
+                  </li>
+                  <li>
+                    <div class="uk-alert uk-alert-warning">Content 3: Goodbye!</div>
+                  </li>
+                </.uk_switcher>
+              </div>
+            </section>
+
             <hr class="uk-divider-icon" />
 
             <section id="dynamic-content" class="uk-margin-large-bottom">
@@ -324,34 +349,42 @@ defmodule DevWeb.HomeLive do
               </.uk_card>
             </section>
 
-            <section id="programmatic-modal" class="uk-margin-large-bottom">
+            <section id="programmatic-switcher" class="uk-margin-large-bottom">
               <h2 class="uk-h2 uk-margin-small-bottom text-primary">
-                Interactive: Programmatic Modal
+                Interactive: Programmatic Switcher
               </h2>
               <.uk_card variant="default">
                 <:body>
-                  <p>Open a modal by changing a server-side assign.</p>
-                  <.uk_button phx-click="open_programmatic_modal" variant="primary">
-                    Open from Server
-                  </.uk_button>
+                  <p>Change the active pane of a switcher from the server.</p>
+                  <div class="uk-margin-bottom space-x-2">
+                    <.uk_button phx-click="set_switcher" phx-value-index="0" variant="secondary">
+                      Show Pane 1
+                    </.uk_button>
+                    <.uk_button phx-click="set_switcher" phx-value-index="1" variant="secondary">
+                      Show Pane 2
+                    </.uk_button>
+                    <.uk_button phx-click="set_switcher" phx-value-index="2" variant="secondary">
+                      Show Pane 3
+                    </.uk_button>
+                  </div>
 
-                  <.uk_modal
-                    id="prog-modal"
-                    show={@show_programmatic_modal}
-                    on_close="close_programmatic_modal"
-                  >
-                    <:header>
-                      <.uk_modal_title>Server Controlled</.uk_modal_title>
-                    </:header>
-                    <:body>
-                      <p>This was triggered by an assign.</p>
-                    </:body>
-                    <:footer class="uk-text-right">
-                      <.uk_button phx-click="close_programmatic_modal" variant="primary">
-                        Close
-                      </.uk_button>
-                    </:footer>
-                  </.uk_modal>
+                  <.uk_subnav pill switcher="connect: #prog-switcher" active={@switcher_index}>
+                    <:item href="#">Pane 1</:item>
+                    <:item href="#">Pane 2</:item>
+                    <:item href="#">Pane 3</:item>
+                  </.uk_subnav>
+
+                  <.uk_switcher id="prog-switcher" class="uk-margin">
+                    <li>
+                      <div class="uk-alert uk-alert-primary">Content 1</div>
+                    </li>
+                    <li>
+                      <div class="uk-alert uk-alert-success">Content 2</div>
+                    </li>
+                    <li>
+                      <div class="uk-alert uk-alert-warning">Content 3</div>
+                    </li>
+                  </.uk_switcher>
                 </:body>
               </.uk_card>
             </section>
@@ -372,6 +405,10 @@ defmodule DevWeb.HomeLive do
     }
 
     {:noreply, assign(socket, items: [new_item | socket.assigns.items])}
+  end
+
+  def handle_event("set_switcher", %{"index" => index}, socket) do
+    {:noreply, assign(socket, switcher_index: String.to_integer(index))}
   end
 
   def handle_event("start_loading", _params, socket) do

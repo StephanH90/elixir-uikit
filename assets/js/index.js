@@ -39,7 +39,24 @@ const Modal = {
   }
 };
 
+const Switcher = {
+  mounted() {
+    this.switcher = UIkit.switcher(this.el);
+    this.handleAttr();
+  },
+  updated() {
+    this.handleAttr();
+  },
+  handleAttr() {
+    if (this.el.dataset.active !== undefined) {
+      const index = parseInt(this.el.dataset.active);
+      this.switcher.show(index);
+    }
+  }
+};
+
 export default {
   Sortable,
-  Modal
+  Modal,
+  Switcher
 };

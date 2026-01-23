@@ -650,6 +650,12 @@ defmodule Uikit.Components do
   """
   attr :divider, :boolean, default: false, doc: "Whether to show a divider between items."
   attr :pill, :boolean, default: false, doc: "Whether to show items as pills."
+  attr :switcher, :any, default: false, doc: "Options for uk-switcher."
+
+  attr :active, :integer,
+    default: nil,
+    doc: "The index of the active item (programmatic control)."
+
   attr :class, :string, default: nil, doc: "Additional CSS classes for the list."
   attr :rest, :global, doc: "Global attributes for the list."
 
@@ -661,6 +667,30 @@ defmodule Uikit.Components do
   end
 
   def uk_subnav(assigns) do
+    rest = assigns.rest
+
+    rest =
+      if assigns.switcher do
+        Map.put(
+          rest,
+          :"uk-switcher",
+          if(assigns.switcher == true, do: true, else: assigns.switcher)
+        )
+      else
+        rest
+      end
+
+    rest =
+      if assigns.active == nil do
+        rest
+      else
+        rest
+        |> Map.put(:"data-active", assigns.active)
+        |> Map.put(:"phx-hook", rest[:"phx-hook"] || "Switcher")
+      end
+
+    assigns = assign(assigns, :rest, rest)
+
     ~H"""
     <ul
       class={[
@@ -692,6 +722,43 @@ defmodule Uikit.Components do
           </.link>
         <% end %>
       </li>
+    </ul>
+    """
+  end
+
+  @doc """
+  Renders a UIkit switcher content container.
+
+  ## Examples
+
+      <.uk_subnav switcher="connect: #my-switcher">
+        <:item href="#">Item 1</:item>
+        <:item href="#">Item 2</:item>
+      </.uk_subnav>
+
+      <.uk_switcher id="my-switcher">
+        <li>Content 1</li>
+        <li>Content 2</li>
+      </.uk_switcher>
+  """
+  attr :id, :string, required: true, doc: "The DOM ID of the switcher."
+  attr :animation, :string, default: nil, doc: "Animation modifier."
+  attr :class, :string, default: nil, doc: "Additional CSS classes."
+  attr :rest, :global, doc: "Global attributes."
+  slot :inner_block, required: true, doc: "The content panes (li elements)."
+
+  def uk_switcher(assigns) do
+    ~H"""
+    <ul
+      id={@id}
+      class={[
+        "uk-switcher",
+        @animation && "uk-animation-#{@animation}",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
     </ul>
     """
   end
