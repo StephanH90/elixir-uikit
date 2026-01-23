@@ -555,4 +555,40 @@ defmodule Uikit.Components do
     </h2>
     """
   end
+
+  @doc """
+  Renders a UIkit label.
+
+  Labels are used to indicate a status or category.
+
+  ## Examples
+
+      <.uk_label>Default</.uk_label>
+      <.uk_label variant="success">Success</.uk_label>
+      <.uk_label variant="warning">Warning</.uk_label>
+      <.uk_label variant="danger">Danger</.uk_label>
+  """
+  attr :variant, :string,
+    default: nil,
+    values: [nil, "success", "warning", "danger"],
+    doc: "The visual style of the label."
+
+  attr :class, :string, default: nil, doc: "Additional CSS classes."
+  attr :rest, :global, doc: "Global attributes."
+  slot :inner_block, required: true, doc: "The content of the label."
+
+  def uk_label(assigns) do
+    ~H"""
+    <span
+      class={[
+        "uk-label",
+        @variant && "uk-label-#{@variant}",
+        @class
+      ]}
+      {@rest}
+    >
+      {render_slot(@inner_block)}
+    </span>
+    """
+  end
 end

@@ -19,7 +19,9 @@ defmodule DevWeb.HomeLive do
               <li class="uk-nav-header">Components</li>
               <li><a href="#button">Button</a></li>
               <li><a href="#badge">Badge</a></li>
+              <li><a href="#label">Label</a></li>
               <li><a href="#card">Card</a></li>
+              
               <li><a href="#container">Container</a></li>
               <li><a href="#grid">Grid</a></li>
               <li><a href="#icon">Icon</a></li>
@@ -73,6 +75,18 @@ defmodule DevWeb.HomeLive do
                   <.uk_badge class="uk-label-success">Success</.uk_badge>
                   <.uk_badge class="uk-label-warning">Warning</.uk_badge>
                   <.uk_badge class="uk-label-danger">Danger</.uk_badge>
+                </div>
+              </div>
+            </section>
+
+            <section id="label" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom">Label</h2>
+              <div class="uk-card uk-card-default uk-card-body">
+                <div class="uk-flex gap-2">
+                  <.uk_label>Default</.uk_label>
+                  <.uk_label variant="success">Success</.uk_label>
+                  <.uk_label variant="warning">Warning</.uk_label>
+                  <.uk_label variant="danger">Danger</.uk_label>
                 </div>
               </div>
             </section>
