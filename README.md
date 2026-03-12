@@ -4,12 +4,12 @@ UIkit components and LiveView hooks for Phoenix applications.
 
 ## Installation
 
-Add `uikit` to your list of dependencies in `mix.exs`:
+Add `elixir_uikit` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:uikit, "~> 0.1.0"}
+    {:elixir_uikit, "~> 0.2.1"}
   ]
 end
 ```

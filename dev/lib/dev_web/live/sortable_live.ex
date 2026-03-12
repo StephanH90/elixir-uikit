@@ -41,11 +41,10 @@ defmodule DevWeb.SortableLive do
   def handle_event("uikit:reorder", %{"items" => item_ids}, socket) do
     # Reorder the items list based on the IDs received from the client
     existing_items = socket.assigns.items
+    items_map = Map.new(existing_items, &{&1.id, &1})
 
     new_items =
-      Enum.map(item_ids, fn id ->
-        Enum.find(existing_items, &(&1.id == id))
-      end)
+      Enum.map(item_ids, &Map.get(items_map, &1))
       |> Enum.reject(&is_nil/1)
 
     {:noreply, assign(socket, items: new_items)}

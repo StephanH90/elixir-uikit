@@ -2,6 +2,8 @@ import UIkit from "uikit";
 
 const Sortable = {
   mounted() {
+    this.sortable = UIkit.sortable(this.el);
+
     UIkit.util.on(this.el, "moved", (e) => {
       const items = Array.from(this.el.children).map((child) => {
         if (!child.id) {
@@ -15,6 +17,11 @@ const Sortable = {
       const eventName = this.el.dataset.event || "uikit:reorder";
       this.pushEvent(eventName, { items: items });
     });
+  },
+  destroyed() {
+    if (this.sortable) {
+      this.sortable.$destroy();
+    }
   }
 };
 
@@ -41,6 +48,11 @@ const Modal = {
       this.modal.show();
     } else {
       this.modal.hide();
+    }
+  },
+  destroyed() {
+    if (this.modal) {
+      this.modal.$destroy();
     }
   }
 };
@@ -82,6 +94,11 @@ const Switcher = {
       if (this.switcher && this.switcher.index !== index) {
         this.switcher.show(index);
       }
+    }
+  },
+  destroyed() {
+    if (this.switcher) {
+      this.switcher.$destroy();
     }
   }
 };

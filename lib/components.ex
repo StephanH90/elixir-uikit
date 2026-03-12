@@ -427,7 +427,6 @@ defmodule Uikit.Components do
   def uk_icon(assigns) do
     assigns =
       assigns
-      |> assign_new(:id, fn -> "uk-icon-#{System.unique_integer([:positive])}" end)
       |> assign_new(:class, fn -> build_icon_class(assigns) end)
       |> assign(:icon_opts, build_icon_opts(assigns))
 
@@ -439,7 +438,7 @@ defmodule Uikit.Components do
       """
     else
       ~H"""
-      <span id={@id} class={@class} phx-update="ignore" {@rest} />
+      <span id={@id} class={@class} phx-update="ignore" {@rest}></span>
       """
     end
   end
@@ -678,7 +677,6 @@ defmodule Uikit.Components do
   def uk_spinner(assigns) do
     assigns =
       assigns
-      |> assign_new(:id, fn -> "uk-spinner-#{System.unique_integer([:positive])}" end)
       |> assign(:spinner_opts, build_spinner_opts(assigns))
 
     assigns =
