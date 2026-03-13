@@ -12,7 +12,7 @@
 - [ ] Add tests for components and form components
 - [x] Remove Tailwind/DaisyUI from dev app - use UIkit-only styling
 - [ ] Fix type specifications in component attrs (`:any` → proper types)
-- [ ] Add LICENSE file
+- [x] Add LICENSE file
 - [ ] Add CHANGELOG.md
 
 ## Medium
