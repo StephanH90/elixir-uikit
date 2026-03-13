@@ -9,8 +9,8 @@
 
 ## Major
 
-- [ ] Add form components (Uikit.Input, Uikit.Form) for consistent form styling
-- [ ] Remove Tailwind/DaisyUI from dev app - use UIkit-only styling
+- [ ] Add tests for components and form components
+- [x] Remove Tailwind/DaisyUI from dev app - use UIkit-only styling
 - [ ] Fix type specifications in component attrs (`:any` → proper types)
 - [ ] Add LICENSE file
 - [ ] Add CHANGELOG.md
@@ -25,3 +25,5 @@
 ## Completed
 
 - [x] Initial project review and assessment
+- [x] Add form components (`Uikit.FormComponents`) with Phoenix form integration
+- [x] Fix missing `default: nil` on `id` attr for `uk_icon` and `uk_spinner`
