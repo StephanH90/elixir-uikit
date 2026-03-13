@@ -416,7 +416,7 @@ defmodule Uikit.Components do
   """
   attr :name, :string, required: true, doc: "the name of the icon"
   attr :ratio, :any, default: 1, doc: "the size multiplier of the icon"
-  attr :id, :string, doc: "the DOM ID of the icon"
+  attr :id, :string, default: nil, doc: "the DOM ID of the icon"
   attr :button, :boolean, default: false, doc: "whether to render as an icon button"
   attr :class, :any, doc: "additional CSS classes"
 
@@ -670,7 +670,7 @@ defmodule Uikit.Components do
       <.uk_spinner ratio={2} />
   """
   attr :ratio, :any, default: 1, doc: "the size multiplier of the spinner"
-  attr :id, :string, doc: "the DOM ID of the spinner"
+  attr :id, :string, default: nil, doc: "the DOM ID of the spinner"
   attr :class, :any, default: nil, doc: "additional CSS classes"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the spinner container"
 

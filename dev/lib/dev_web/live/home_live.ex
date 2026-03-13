@@ -36,6 +36,10 @@ defmodule DevWeb.HomeLive do
               <li><a href="#subnav">Subnav</a></li>
               <li><a href="#switcher">Switcher</a></li>
               <li class="uk-nav-divider"></li>
+              <li class="uk-nav-header">Other Pages</li>
+              <li><.link navigate="/forms">Form Components</.link></li>
+              <li><.link navigate="/sortable">Sortable</.link></li>
+              <li class="uk-nav-divider"></li>
               <li class="uk-nav-header">Interactive Tests</li>
               <li><a href="#dynamic-content">Dynamic Content</a></li>
               <li><a href="#programmatic-modal">Programmatic Modal</a></li>

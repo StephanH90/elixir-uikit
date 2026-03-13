@@ -19,6 +19,7 @@ defmodule DevWeb.Router do
 
     live("/", HomeLive)
     live("/sortable", SortableLive)
+    live("/forms", FormLive)
   end
 
   # Other scopes may use custom stacks.

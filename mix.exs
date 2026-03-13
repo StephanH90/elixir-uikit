@@ -13,7 +13,8 @@ defmodule Uikit.MixProject do
       docs: [
         main: "readme",
         extras: ["README.md"]
-      ]
+      ],
+      usage_rules: usage_rules()
     ]
   end
 
@@ -46,13 +47,36 @@ defmodule Uikit.MixProject do
   defp deps do
     [
       {:tidewave, "~> 0.5", only: [:dev]},
-      {:usage_rules, "~> 0.1", only: [:dev]},
-      {:igniter, "~> 0.6", optional: true},
+      {:usage_rules, "~> 1.1", only: [:dev]},
+      {:igniter, "~> 0.6", only: [:dev]},
       {:phoenix, "~> 1.8.3"},
       {:phoenix_live_view, "~> 1.0"},
       {:phoenix_html, "~> 4.0"},
       {:quokka, "~> 2.11", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.31", only: :dev, runtime: false}
+    ]
+  end
+
+  defp usage_rules do
+    # Example for those using claude.
+    [
+      file: "CLAUDE.md",
+      # rules to include directly in CLAUDE.md
+      # use a regex to match multiple deps, or atoms/strings for specific ones
+      # If your CLAUDE.md is getting too big, link instead of inlining:
+      # or use skills
+      skills: [
+        location: ".claude/skills",
+        # build skills that combine multiple usage rules
+        build: [
+          "phoenix-framework": [
+            description:
+              "Use this skill working with Phoenix Framework. Consult this when working with the web layer, controllers, views, liveviews etc.",
+            # Include all Phoenix dependencies
+            usage_rules: [:phoenix, ~r/^phoenix_/]
+          ]
+        ]
+      ]
     ]
   end
 end
