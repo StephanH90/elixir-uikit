@@ -11,7 +11,7 @@ Add `elixir_uikit` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elixir_uikit, "~> 0.5.0"}
+    {:elixir_uikit, "~> 0.5.1"}
   ]
 end
 ```

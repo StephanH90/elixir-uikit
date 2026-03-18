@@ -40,7 +40,9 @@ defmodule Uikit.MixProject do
       "AGENTS.md",
       "mix.exs",
       "README.md",
-      "assets"
+      "assets",
+      "usage-rules.md",
+      "usage-rules"
     ]
   end
 
