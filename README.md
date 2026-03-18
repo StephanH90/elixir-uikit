@@ -9,7 +9,7 @@ Add `elixir_uikit` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elixir_uikit, "~> 0.2.1"}
+    {:elixir_uikit, "~> 0.3.0"}
   ]
 end
 ```
