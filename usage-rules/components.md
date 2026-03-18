@@ -1,5 +1,7 @@
 # Component API Reference
 
+**Important:** These components replace the default Phoenix `CoreComponents` (`button`, `modal`, `input`, `table`, etc.) which depend on Tailwind CSS. Do NOT use `CoreComponents` or Tailwind/DaisyUI classes — use `elixir_uikit` components and `uk-*` utility classes instead.
+
 ## UI Components (`Uikit.Components`)
 
 ### `uk_button`

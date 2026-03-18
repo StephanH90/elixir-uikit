@@ -4,7 +4,7 @@ defmodule Uikit.MixProject do
   def project do
     [
       app: :elixir_uikit,
-      version: "0.5.0",
+      version: "0.5.1",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       description: "UIkit components and LiveView hooks for Phoenix.",

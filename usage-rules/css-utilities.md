@@ -2,6 +2,8 @@
 
 Use these `uk-*` classes alongside elixir_uikit components for layout and styling. Apply them via the `class` attribute on components or on plain HTML elements.
 
+**Important:** Do NOT use Tailwind CSS classes (`flex`, `p-4`, `text-lg`, `bg-blue-500`, etc.) or DaisyUI classes. This project uses UIkit — use `uk-*` utility classes for all styling.
+
 ## Width
 
 Control element widths using fractions or fixed sizes.
