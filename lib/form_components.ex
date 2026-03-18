@@ -6,16 +6,10 @@ defmodule Uikit.FormComponents do
   with `<.form>` and `to_form/2`-based forms, including error display and
   field name/id generation.
 
-  ## Usage
+  ## Setup
 
-  Import this module alongside `Uikit.Components` in your web interface:
-
-      defp html_helpers do
-        quote do
-          import Uikit.Components
-          import Uikit.FormComponents
-        end
-      end
+  Run `mix uikit.setup` to automatically configure your project and import this module.
+  See the [installation guide](https://hexdocs.pm/elixir_uikit) for details.
 
   ## Basic Example
 

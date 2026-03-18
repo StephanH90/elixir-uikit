@@ -5,22 +5,10 @@ defmodule Uikit.Components do
   This module offers a collection of function components that wrap standard UIkit elements,
   making them easy to use within Phoenix LiveView and HEEx templates.
 
-  ## Prerequisites
+  ## Setup
 
-  Ensure that UIkit CSS and JS are loaded in your application.
-  See the `README.md` for installation instructions.
-
-  ## Usage
-
-  Import this module in your web interface (e.g., `lib/my_app_web.ex`):
-
-      defp html_helpers do
-        quote do
-          # ...
-          import Uikit.Components
-          # ...
-        end
-      end
+  Run `mix uikit.setup` to automatically configure your project and import this module.
+  See the [installation guide](https://hexdocs.pm/elixir_uikit) for details.
   """
   use Phoenix.Component
 

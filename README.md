@@ -1,6 +1,8 @@
-# Uikit
+# Elixir UIkit
 
-UIkit components and LiveView hooks for Phoenix applications.
+UIkit components and LiveView hooks for Phoenix applications. No Node.js required.
+
+Full documentation is available at [hexdocs.pm/elixir_uikit](https://hexdocs.pm/elixir_uikit).
 
 ## Installation
 
@@ -9,97 +11,109 @@ Add `elixir_uikit` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elixir_uikit, "~> 0.3.0"}
+    {:elixir_uikit, "~> 0.5.0"}
   ]
 end
 ```
 
-## JavaScript Setup
+Then run the setup task:
 
-This library provides LiveView hooks (e.g. for Sortable). To use them, you need to add the JavaScript dependency and register the hooks.
-
-1.  Add `uikit_ex` and `uikit` to your `assets/package.json` dependencies:
-
-    ```json
-    {
-      "dependencies": {
-        "uikit": "^3.0.0",
-        "uikit_ex": "file:../deps/uikit"
-      }
-    }
-    ```
-
-2.  Run `npm install` inside your `assets` directory.
-
-3.  Import and register the hooks in `assets/js/app.js`:
-
-    ```javascript
-    import { Socket } from "phoenix"
-    import { LiveSocket } from "phoenix_live_view"
-    
-    // Import UIkit and the hooks
-    import UIkit from "uikit"
-    import Icons from "uikit/dist/js/uikit-icons"
-    import UikitHooks from "uikit_ex"
-
-    // Initialize UIkit
-    UIkit.use(Icons)
-    window.UIkit = UIkit
-
-    let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-    let liveSocket = new LiveSocket("/live", Socket, {
-      params: { _csrf_token: csrfToken },
-      // Register the hooks
-      hooks: { ...UikitHooks }
-    })
-    
-    // ...
-    ```
-
-## CSS Setup
-
-Ensure you have UIkit styles loaded. You can import them in your `assets/css/app.css` (if using css import support) or `assets/css/app.scss`:
-
-```scss
-/* assets/css/app.scss */
-@import "../node_modules/uikit/dist/css/uikit.min.css";
+```bash
+mix deps.get
+mix uikit.setup
 ```
 
-Or allow your build tool (like Sass) to handle the imports as needed.
+This will:
+
+- Remove Tailwind CSS, DaisyUI, and heroicons
+- Add and configure `dart_sass` for SCSS compilation
+- Set up `assets/js/app.js` with UIkit imports and LiveView hooks
+- Create `assets/css/app.scss` with UIkit SCSS imports
+- Add component imports to your web module
+
+UIkit's JS and SCSS files are shipped with this package — everything is resolved
+from `deps/elixir_uikit`, so no npm or Node.js installation is needed.
+
+After setup, run `mix deps.get` again to fetch `dart_sass`, then start your server:
+
+```bash
+mix deps.get
+mix phx.server
+```
 
 ## Usage
 
-### Components
-
-Import the components in your `lib/my_app_web.ex` file under `html_helpers`:
-
-```elixir
-defp html_helpers do
-  quote do
-    # ...
-    import Uikit.Components
-    # ...
-  end
-end
-```
-
-Then you can use components like `<.uk_button>`, `<.uk_card>`, etc.
-
-### Sortable Example
+Components are automatically imported by the installer. Use them in your HEEx templates:
 
 ```heex
-<.uk_sortable group="my-group" grid id="sortable-list" phx-hook="Sortable">
-  <div :for={item <- @items} id={item.id}>
-    {item.text}
-  </div>
+<.uk_button variant="primary">Click me</.uk_button>
+
+<.uk_card>
+  <:header><.uk_card_title>Title</.uk_card_title></:header>
+  <:body>Card content</:body>
+</.uk_card>
+```
+
+### Available Components
+
+- `uk_button`, `uk_badge`, `uk_label`, `uk_icon`, `uk_spinner`
+- `uk_card`, `uk_card_title`, `uk_container`, `uk_section`, `uk_grid`
+- `uk_modal`, `uk_modal_title`, `uk_sortable`, `uk_subnav`, `uk_switcher`
+
+### Form Components
+
+- `uk_form`, `uk_input`, `uk_checkbox`, `uk_radio`, `uk_range`
+- `uk_fieldset`, `uk_form_label`, `uk_form_controls`, `uk_form_icon`
+
+### LiveView Hooks
+
+The installer sets up three hooks automatically:
+
+**Sortable** — drag-and-drop reordering:
+
+```heex
+<.uk_sortable id="my-list" phx-hook="Sortable">
+  <div :for={item <- @items} id={item.id}>{item.text}</div>
 </.uk_sortable>
 ```
 
-Handle the `uikit:reorder` event in your LiveView:
-
 ```elixir
 def handle_event("uikit:reorder", %{"items" => item_ids}, socket) do
-  # item_ids contains the list of IDs in the new order
   {:noreply, socket}
 end
+```
+
+**Modal** — server-controlled show/hide:
+
+```heex
+<.uk_modal id="my-modal" show={@show_modal} on_close="close_modal">
+  <:title>Modal Title</:title>
+  Modal content here.
+</.uk_modal>
+```
+
+**Switcher** — tab switching with server sync:
+
+```heex
+<.uk_subnav id="tabs" switcher active={@active_tab} on_change="tab_changed">
+  <:item id="tab-1">Tab 1</:item>
+  <:item id="tab-2">Tab 2</:item>
+</.uk_subnav>
+```
+
+## SCSS Customization
+
+The installer configures dart_sass with a load path pointing to UIkit's SCSS source.
+You can customize UIkit variables by overriding them in `assets/css/app.scss` before the imports:
+
+```scss
+// Override UIkit variables
+$global-primary-background: #1e87f0;
+
+// UIkit (loaded via dart_sass --load-path)
+@import "variables-theme";
+@import "mixins-theme";
+@import "uikit-theme";
+
+/* Your custom styles below */
 ```
