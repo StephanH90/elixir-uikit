@@ -35,6 +35,7 @@ defmodule DevWeb.HomeLive do
               <li><a href="#spinner">Spinner</a></li>
               <li><a href="#subnav">Subnav</a></li>
               <li><a href="#switcher">Switcher</a></li>
+              <li><a href="#comment">Comment</a></li>
               <li class="uk-nav-divider"></li>
               <li class="uk-nav-header">Other Pages</li>
               <li><.link navigate="/forms">Form Components</.link></li>
@@ -328,6 +329,129 @@ defmodule DevWeb.HomeLive do
                       <div class="uk-alert uk-alert-warning">Content 3: Goodbye!</div>
                     </li>
                   </.uk_switcher>
+                </:body>
+              </.uk_card>
+            </section>
+
+            <section id="comment" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom">Comment</h2>
+              <.uk_card>
+                <:body>
+                  <h3 class="uk-h4">Single Comment</h3>
+                  <.uk_comment id="demo-comment-single">
+                    <:avatar
+                      src="https://getuikit.com/docs/images/avatar.jpg"
+                      width="80"
+                      height="80"
+                      alt="Avatar"
+                    />
+                    <:title>Author</:title>
+                    <:meta>12 days ago</:meta>
+                    <:meta><a href="#">Reply</a></:meta>
+                    <:body>
+                      <p>
+                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                        nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.
+                      </p>
+                    </:body>
+                  </.uk_comment>
+
+                  <h3 class="uk-h4 uk-margin-top">Primary Comment</h3>
+                  <.uk_comment id="demo-comment-primary" primary>
+                    <:avatar
+                      src="https://getuikit.com/docs/images/avatar.jpg"
+                      width="80"
+                      height="80"
+                      alt="Avatar"
+                    />
+                    <:title>Admin</:title>
+                    <:meta>5 minutes ago</:meta>
+                    <:body>
+                      <p>
+                        This is a highlighted comment, useful for admin or featured responses.
+                      </p>
+                    </:body>
+                  </.uk_comment>
+
+                  <h3 class="uk-h4 uk-margin-top">Threaded Comment List</h3>
+                  <.uk_comment_list>
+                    <li>
+                      <.uk_comment id="demo-thread-1">
+                        <:avatar
+                          src="https://getuikit.com/docs/images/avatar.jpg"
+                          width="80"
+                          height="80"
+                          alt="Avatar"
+                        />
+                        <:title>Author</:title>
+                        <:meta>12 days ago</:meta>
+                        <:meta><a href="#">Reply</a></:meta>
+                        <:body>
+                          <p>
+                            Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                            nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam.
+                          </p>
+                        </:body>
+                      </.uk_comment>
+                      <ul>
+                        <li>
+                          <.uk_comment id="demo-thread-1-1">
+                            <:avatar
+                              src="https://getuikit.com/docs/images/avatar.jpg"
+                              width="80"
+                              height="80"
+                              alt="Avatar"
+                            />
+                            <:title>Author</:title>
+                            <:meta>6 days ago</:meta>
+                            <:meta><a href="#">Reply</a></:meta>
+                            <:body>
+                              <p>
+                                Sed diam voluptua. At vero eos et accusam et justo duo dolores
+                                et ea rebum.
+                              </p>
+                            </:body>
+                          </.uk_comment>
+                          <ul>
+                            <li>
+                              <.uk_comment id="demo-thread-1-1-1" primary>
+                                <:avatar
+                                  src="https://getuikit.com/docs/images/avatar.jpg"
+                                  width="80"
+                                  height="80"
+                                  alt="Avatar"
+                                />
+                                <:title>Admin</:title>
+                                <:meta>3 days ago</:meta>
+                                <:body>
+                                  <p>Thanks for the feedback! We'll look into this.</p>
+                                </:body>
+                              </.uk_comment>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                    <li>
+                      <.uk_comment id="demo-thread-2">
+                        <:avatar
+                          src="https://getuikit.com/docs/images/avatar.jpg"
+                          width="80"
+                          height="80"
+                          alt="Avatar"
+                        />
+                        <:title>Author</:title>
+                        <:meta>4 days ago</:meta>
+                        <:meta><a href="#">Reply</a></:meta>
+                        <:body>
+                          <p>
+                            Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+                            dolor sit amet.
+                          </p>
+                        </:body>
+                      </.uk_comment>
+                    </li>
+                  </.uk_comment_list>
                 </:body>
               </.uk_card>
             </section>

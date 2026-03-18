@@ -27,6 +27,8 @@ Run `mix uikit.setup` to configure your project automatically (imports, hooks, C
 | `uk_spinner` | `ratio` | — |
 | `uk_subnav` | `id` (required), `divider`, `pill`, `switcher`, `active`, `on_change` | `item` (has `href`, `active`, `disabled`, `class`) |
 | `uk_switcher` | `id` (required), `animation` | `inner_block` |
+| `uk_comment` | `id`, `primary` | `avatar` (has `src`, `width`, `height`, `alt`), `title`, `meta`, `body`, `inner_block` |
+| `uk_comment_list` | `class` | `inner_block` |
 
 ### Form Components (`Uikit.FormComponents`)
 

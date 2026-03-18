@@ -846,4 +846,132 @@ defmodule Uikit.Components do
     </ul>
     """
   end
+
+  @doc """
+  Renders a UIkit comment.
+
+  Comments display user-generated content with an avatar, author info, and body text.
+
+  ## Examples
+
+      <.uk_comment id="comment-1">
+        <:avatar src="/images/avatar.jpg" width="80" height="80" alt="Author" />
+        <:title>Author Name</:title>
+        <:meta>12 days ago</:meta>
+        <:meta><a href="#">Reply</a></:meta>
+        <:body>
+          <p>Comment text goes here.</p>
+        </:body>
+      </.uk_comment>
+
+      <.uk_comment id="comment-admin" primary>
+        <:avatar src="/images/admin.jpg" width="80" height="80" alt="Admin" />
+        <:title>Admin</:title>
+        <:meta>5 minutes ago</:meta>
+        <:body>
+          <p>Highlighted admin response.</p>
+        </:body>
+      </.uk_comment>
+  """
+  attr :id, :string, default: nil, doc: "the DOM ID of the comment"
+  attr :primary, :boolean, default: false, doc: "whether to highlight the comment (e.g. admin)"
+  attr :class, :any, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the comment container"
+
+  slot :avatar, doc: "the author avatar image" do
+    attr :src, :string, required: true, doc: "the image URL"
+    attr :width, :string, doc: "the image width"
+    attr :height, :string, doc: "the image height"
+    attr :alt, :string, doc: "the image alt text"
+  end
+
+  slot :title, doc: "the comment title (typically the author name)"
+  slot :meta, doc: "meta information items (timestamp, reply link, etc.)"
+  slot :body, doc: "the comment body content"
+  slot :inner_block, doc: "inner content, if not using structured slots"
+
+  def uk_comment(assigns) do
+    ~H"""
+    <article
+      id={@id}
+      class={[
+        "uk-comment",
+        @primary && "uk-comment-primary",
+        @class
+      ]}
+      role="comment"
+      {@rest}
+    >
+      <header class="uk-comment-header">
+        <div class="uk-grid uk-grid-medium uk-flex-middle">
+          <div :if={@avatar != []} class="uk-width-auto">
+            <img
+              :for={avatar <- @avatar}
+              class="uk-comment-avatar"
+              src={avatar.src}
+              width={avatar[:width]}
+              height={avatar[:height]}
+              alt={avatar[:alt] || ""}
+            />
+          </div>
+          <div class="uk-width-expand">
+            <h4 :if={@title != []} class="uk-comment-title uk-margin-remove">
+              {render_slot(@title)}
+            </h4>
+            <ul
+              :if={@meta != []}
+              class="uk-comment-meta uk-subnav uk-subnav-divider uk-margin-remove-top"
+            >
+              <li :for={meta <- @meta}>{render_slot(meta)}</li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div :if={@body != []} class="uk-comment-body">
+        {render_slot(@body)}
+      </div>
+      {render_slot(@inner_block)}
+    </article>
+    """
+  end
+
+  @doc """
+  Renders a UIkit comment list for threaded comment layouts.
+
+  Wrap comments in `<li>` elements. Nest a `<ul>` inside an `<li>` for replies.
+
+  ## Examples
+
+      <.uk_comment_list>
+        <li>
+          <.uk_comment id="comment-1">
+            <:avatar src="/images/user1.jpg" width="80" height="80" alt="User 1" />
+            <:title>User 1</:title>
+            <:meta>12 days ago</:meta>
+            <:body><p>Top-level comment.</p></:body>
+          </.uk_comment>
+          <ul>
+            <li>
+              <.uk_comment id="comment-1-1">
+                <:avatar src="/images/user2.jpg" width="80" height="80" alt="User 2" />
+                <:title>User 2</:title>
+                <:meta>6 days ago</:meta>
+                <:body><p>A nested reply.</p></:body>
+              </.uk_comment>
+            </li>
+          </ul>
+        </li>
+      </.uk_comment_list>
+  """
+  attr :class, :any, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the comment list"
+  slot :inner_block, required: true, doc: "the comment list items (li elements)"
+
+  def uk_comment_list(assigns) do
+    ~H"""
+    <ul class={["uk-comment-list", @class]} {@rest}>
+      {render_slot(@inner_block)}
+    </ul>
+    """
+  end
 end

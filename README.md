@@ -59,6 +59,7 @@ Components are automatically imported by the installer. Use them in your HEEx te
 - `uk_button`, `uk_badge`, `uk_label`, `uk_icon`, `uk_spinner`
 - `uk_card`, `uk_card_title`, `uk_container`, `uk_section`, `uk_grid`
 - `uk_modal`, `uk_modal_title`, `uk_sortable`, `uk_subnav`, `uk_switcher`
+- `uk_comment`, `uk_comment_list`
 
 ### Form Components
 

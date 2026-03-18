@@ -196,6 +196,59 @@ Content container connected to a subnav switcher.
 
 **Attrs:** `id` (required), `animation`, `class`.
 
+### `uk_comment`
+
+Displays user-generated content with avatar, author info, and body. Use `primary` for highlighted comments (e.g. admin responses).
+
+```heex
+<.uk_comment id="comment-1">
+  <:avatar src="/images/avatar.jpg" width="80" height="80" alt="Author" />
+  <:title>Author Name</:title>
+  <:meta>12 days ago</:meta>
+  <:meta><a href="#">Reply</a></:meta>
+  <:body><p>Comment text goes here.</p></:body>
+</.uk_comment>
+
+<.uk_comment id="comment-admin" primary>
+  <:avatar src="/images/admin.jpg" width="80" height="80" alt="Admin" />
+  <:title>Admin</:title>
+  <:meta>Just now</:meta>
+  <:body><p>Highlighted admin response.</p></:body>
+</.uk_comment>
+```
+
+**Attrs:** `id`, `primary`, `class`.
+**Slots:** `avatar` (has `src` required, `width`, `height`, `alt`), `title`, `meta` (multiple allowed), `body`, `inner_block`.
+
+### `uk_comment_list`
+
+Threaded comment layout. Wrap comments in `<li>` elements; nest a `<ul>` inside an `<li>` for replies.
+
+```heex
+<.uk_comment_list>
+  <li>
+    <.uk_comment id="comment-1">
+      <:avatar src="/images/user1.jpg" width="80" height="80" alt="User 1" />
+      <:title>User 1</:title>
+      <:meta>12 days ago</:meta>
+      <:body><p>Top-level comment.</p></:body>
+    </.uk_comment>
+    <ul>
+      <li>
+        <.uk_comment id="comment-1-1">
+          <:avatar src="/images/user2.jpg" width="80" height="80" alt="User 2" />
+          <:title>User 2</:title>
+          <:meta>6 days ago</:meta>
+          <:body><p>A nested reply.</p></:body>
+        </.uk_comment>
+      </li>
+    </ul>
+  </li>
+</.uk_comment_list>
+```
+
+**Attrs:** `class`.
+
 ---
 
 ## Form Components (`Uikit.FormComponents`)
