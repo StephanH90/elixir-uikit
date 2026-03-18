@@ -1,14 +1,14 @@
-defmodule Mix.Tasks.Uikit.Install.Docs do
+defmodule Mix.Tasks.Uikit.Setup.Docs do
   @moduledoc false
 
   @spec short_doc() :: String.t()
   def short_doc do
-    "Installs and configures elixir_uikit in your Phoenix application"
+    "Sets up UIkit in your Phoenix application — no Node.js required"
   end
 
   @spec example() :: String.t()
   def example do
-    "mix uikit.install"
+    "mix uikit.setup"
   end
 
   @spec long_doc() :: String.t()
@@ -16,14 +16,20 @@ defmodule Mix.Tasks.Uikit.Install.Docs do
     """
     #{short_doc()}
 
+    UIkit's JS and SCSS source files are shipped with the `elixir_uikit` package.
+    This task configures your project to use them directly from `deps/elixir_uikit`
+    — nothing is vendored into your project.
+
     This task will:
 
-    - Remove Tailwind CSS, DaisyUI, and heroicons (deps, config, vendor files)
-    - Add the `dart_sass` dependency and configure it for SCSS compilation
-    - Add UIkit npm packages to `assets/package.json`
-    - Set up JavaScript hooks in `assets/js/app.js`
-    - Replace `app.css` with `app.scss` using UIkit imports
-    - Add component imports to your web module
+    - Remove Tailwind CSS, DaisyUI, and heroicons
+    - Add and configure `dart_sass` with a load path into the dep's SCSS
+    - Configure esbuild aliases to resolve UIkit JS from the dep
+    - Set up `assets/js/app.js` with UIkit imports and LiveView hooks
+    - Create `assets/css/app.scss` with UIkit SCSS imports
+    - Add UIkit component imports to your web module
+
+    No Node.js or npm installation is required.
 
     ## Example
 
@@ -35,7 +41,7 @@ defmodule Mix.Tasks.Uikit.Install.Docs do
 end
 
 if Code.ensure_loaded?(Igniter) do
-  defmodule Mix.Tasks.Uikit.Install do
+  defmodule Mix.Tasks.Uikit.Setup do
     @shortdoc "#{__MODULE__.Docs.short_doc()}"
 
     @moduledoc __MODULE__.Docs.long_doc()
@@ -59,18 +65,15 @@ if Code.ensure_loaded?(Igniter) do
       |> Igniter.Project.Deps.add_dep({:dart_sass, "~> 0.7", only: :dev})
       |> remove_tailwind()
       |> configure_dart_sass(app_name)
-      |> add_npm_deps()
-      |> configure_esbuild_node_path()
       |> setup_javascript()
       |> setup_stylesheet()
       |> add_component_imports()
       |> Igniter.add_notice("""
-      UIkit has been installed successfully!
+      UIkit has been set up successfully — no Node.js required!
 
       Next steps:
-        1. Run `mix deps.get` to fetch the new dependencies
-        2. Run `cd assets && npm install` to install UIkit npm packages
-        3. Restart your Phoenix server
+        1. Run `mix deps.get` to fetch dart_sass
+        2. Restart your Phoenix server
 
       You can now use UIkit components in your templates:
 
@@ -157,7 +160,11 @@ if Code.ensure_loaded?(Igniter) do
         {:code,
          quote do
            [
-             args: ["css/app.scss", "../priv/static/assets/css/app.css"],
+             args: [
+               "--load-path=../deps/elixir_uikit/priv/vendor/uikit/scss",
+               "css/app.scss",
+               "../priv/static/assets/css/app.css"
+             ],
              cd: Path.expand("../assets", __DIR__)
            ]
          end},
@@ -167,7 +174,11 @@ if Code.ensure_loaded?(Igniter) do
              zipper,
              quote do
                [
-                 args: ["css/app.scss", "../priv/static/assets/css/app.css"],
+                 args: [
+                   "--load-path=../deps/elixir_uikit/priv/vendor/uikit/scss",
+                   "css/app.scss",
+                   "../priv/static/assets/css/app.css"
+                 ],
                  cd: Path.expand("../assets", __DIR__)
                ]
              end
@@ -200,53 +211,6 @@ if Code.ensure_loaded?(Igniter) do
       end)
     end
 
-    # ── NPM dependencies ─────────────────────────────────────────────────
-
-    defp add_npm_deps(igniter) do
-      Igniter.create_or_update_file(
-        igniter,
-        "assets/package.json",
-        Jason.encode!(%{"dependencies" => npm_deps()}, pretty: true),
-        fn source ->
-          content = Rewrite.Source.get(source, :content)
-
-          case Jason.decode(content) do
-            {:ok, package} ->
-              deps = package |> Map.get("dependencies", %{}) |> Map.merge(npm_deps())
-
-              new_content =
-                package |> Map.put("dependencies", deps) |> Jason.encode!(pretty: true)
-
-              Rewrite.Source.update(source, :content, fn _ -> new_content end)
-
-            {:error, _} ->
-              Rewrite.Source.update(source, :content, fn _ ->
-                Jason.encode!(%{"dependencies" => npm_deps()}, pretty: true)
-              end)
-          end
-        end
-      )
-    end
-
-    defp npm_deps, do: %{"uikit" => "^3.25.6", "uikit_ex" => "file:../deps/elixir_uikit"}
-
-    # ── Esbuild NODE_PATH ────────────────────────────────────────────────
-
-    defp configure_esbuild_node_path(igniter) do
-      Igniter.update_file(igniter, "config/config.exs", fn source ->
-        content = Rewrite.Source.get(source, :content)
-
-        new_content =
-          Regex.replace(
-            ~r/(env:\s*%\{"NODE_PATH"\s*=>\s*\[)/,
-            content,
-            ~s|\\1Path.expand("../assets/node_modules", __DIR__), |
-          )
-
-        Rewrite.Source.update(source, :content, fn _ -> new_content end)
-      end)
-    end
-
     # ── JavaScript setup ─────────────────────────────────────────────────
 
     defp setup_javascript(igniter) do
@@ -262,7 +226,6 @@ if Code.ensure_loaded?(Igniter) do
     defp add_uikit_js_imports(content) do
       lines = String.split(content, "\n")
 
-      # Find the last top-level import line
       last_import_idx =
         lines
         |> Enum.with_index()
@@ -275,18 +238,18 @@ if Code.ensure_loaded?(Igniter) do
 
       uikit_lines = [
         "",
-        "import UIkit from \"uikit\"",
-        "import Icons from \"uikit/dist/js/uikit-icons\"",
-        "import UikitHooks from \"uikit_ex\"",
+        "import UIkit from \"../../deps/elixir_uikit/priv/vendor/uikit/js/uikit.min.js\"",
+        "import Icons from \"../../deps/elixir_uikit/priv/vendor/uikit/js/uikit-icons.min.js\"",
         "",
         "UIkit.use(Icons)",
-        "window.UIkit = UIkit"
+        "window.UIkit = UIkit",
+        "",
+        "import UikitHooks from \"../../deps/elixir_uikit/priv/static/js/elixir_uikit.js\""
       ]
 
       {before, after_lines} = Enum.split(lines, last_import_idx + 1)
       new_content = Enum.join(before ++ uikit_lines ++ after_lines, "\n")
 
-      # Merge UikitHooks into LiveSocket hooks
       cond do
         Regex.match?(~r/hooks:\s*\{\.\.\./, new_content) ->
           Regex.replace(
@@ -319,7 +282,6 @@ if Code.ensure_loaded?(Igniter) do
     defp setup_stylesheet(igniter) do
       css_path = "assets/css/app.css"
 
-      # Remove the old app.css (Tailwind content)
       igniter = Igniter.include_existing_file(igniter, css_path, required: false)
 
       igniter =
@@ -329,7 +291,6 @@ if Code.ensure_loaded?(Igniter) do
           igniter
         end
 
-      # Create app.scss with UIkit imports
       Igniter.create_or_update_file(
         igniter,
         "assets/css/app.scss",
@@ -344,10 +305,10 @@ if Code.ensure_loaded?(Igniter) do
 
     defp uikit_scss_content do
       String.trim_leading("""
-      // UIkit
-      @import "../node_modules/uikit/src/scss/variables-theme.scss";
-      @import "../node_modules/uikit/src/scss/mixins-theme.scss";
-      @import "../node_modules/uikit/src/scss/uikit-theme.scss";
+      // UIkit (loaded via dart_sass --load-path)
+      @import "variables-theme";
+      @import "mixins-theme";
+      @import "uikit-theme";
 
       /* Add your custom styles below */
       """)
@@ -374,7 +335,7 @@ if Code.ensure_loaded?(Igniter) do
     end
   end
 else
-  defmodule Mix.Tasks.Uikit.Install do
+  defmodule Mix.Tasks.Uikit.Setup do
     @shortdoc "#{__MODULE__.Docs.short_doc()} | Install `igniter` to use"
 
     @moduledoc __MODULE__.Docs.long_doc()
@@ -384,7 +345,7 @@ else
     @impl Mix.Task
     def run(_argv) do
       Mix.shell().error("""
-      The task 'uikit.install' requires igniter. Please install igniter and try again.
+      The task 'uikit.setup' requires igniter. Please install igniter and try again.
 
       For more information, see: https://hexdocs.pm/igniter/readme.html#installation
       """)
