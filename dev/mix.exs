@@ -27,7 +27,7 @@ defmodule Dev.MixProject do
 
   def cli do
     [
-      preferred_envs: [precommit: :test]
+      preferred_envs: [precommit: :test, "test.browser": :test]
     ]
   end
 
@@ -52,7 +52,8 @@ defmodule Dev.MixProject do
       {:dns_cluster, "~> 0.2.0"},
       {:bandit, "~> 1.5"},
       {:elixir_uikit, path: ".."},
-      {:dart_sass, "~> 0.7", only: [:dev]}
+      {:dart_sass, "~> 0.7", only: [:dev]},
+      {:wallaby, "~> 0.30", only: :test, runtime: false}
     ]
   end
 
@@ -72,7 +73,8 @@ defmodule Dev.MixProject do
         "esbuild dev --minify",
         "phx.digest"
       ],
-      precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"]
+      precommit: ["compile --warnings-as-errors", "deps.unlock --unused", "format", "test"],
+      "test.browser": ["test --only browser"]
     ]
   end
 end

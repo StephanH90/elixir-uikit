@@ -35,6 +35,7 @@ defmodule DevWeb.HomeLive do
               <li><a href="#spinner">Spinner</a></li>
               <li><a href="#subnav">Subnav</a></li>
               <li><a href="#switcher">Switcher</a></li>
+              <li><a href="#dropdown">Dropdown</a></li>
               <li><a href="#comment">Comment</a></li>
               <li class="uk-nav-divider"></li>
               <li class="uk-nav-header">Other Pages</li>
@@ -329,6 +330,110 @@ defmodule DevWeb.HomeLive do
                       <div class="uk-alert uk-alert-warning">Content 3: Goodbye!</div>
                     </li>
                   </.uk_switcher>
+                </:body>
+              </.uk_card>
+            </section>
+
+            <section id="dropdown" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom">Dropdown</h2>
+              <.uk_card>
+                <:body>
+                  <h3 class="uk-h4">Hover (default)</h3>
+                  <div class="uk-flex gap-2 uk-flex-wrap">
+                    <div class="uk-inline">
+                      <.uk_button>Hover</.uk_button>
+                      <.uk_dropdown>
+                        <p>
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+                        </p>
+                      </.uk_dropdown>
+                    </div>
+
+                    <div class="uk-inline">
+                      <.uk_button variant="primary">Click Toggle</.uk_button>
+                      <.uk_dropdown mode="click">
+                        <p>This dropdown opens on click only.</p>
+                      </.uk_dropdown>
+                    </div>
+
+                    <div class="uk-inline">
+                      <.uk_button variant="secondary">Large</.uk_button>
+                      <.uk_dropdown large>
+                        <p>This dropdown has larger padding.</p>
+                      </.uk_dropdown>
+                    </div>
+                  </div>
+
+                  <h3 class="uk-h4 uk-margin-top">Navigation</h3>
+                  <div class="uk-flex gap-2 uk-flex-wrap">
+                    <div class="uk-inline">
+                      <.uk_button>Nav Dropdown</.uk_button>
+                      <.uk_dropdown>
+                        <:nav>
+                          <li class="uk-active"><a href="#">Active</a></li>
+                          <li><a href="#">Item</a></li>
+                          <li class="uk-nav-header">Header</li>
+                          <li><a href="#">Item</a></li>
+                          <li><a href="#">Item</a></li>
+                          <li class="uk-nav-divider"></li>
+                          <li><a href="#">Item</a></li>
+                        </:nav>
+                      </.uk_dropdown>
+                    </div>
+
+                    <div class="uk-inline">
+                      <.uk_button variant="primary">Click Nav</.uk_button>
+                      <.uk_dropdown mode="click">
+                        <:nav>
+                          <li><a href="#">Dashboard</a></li>
+                          <li><a href="#">Settings</a></li>
+                          <li class="uk-nav-divider"></li>
+                          <li><a href="#">Logout</a></li>
+                        </:nav>
+                      </.uk_dropdown>
+                    </div>
+                  </div>
+
+                  <h3 class="uk-h4 uk-margin-top">Positioning</h3>
+                  <div class="uk-flex gap-2 uk-flex-wrap">
+                    <div class="uk-inline">
+                      <.uk_button>Top Center</.uk_button>
+                      <.uk_dropdown pos="top-center">
+                        <p>Positioned top-center.</p>
+                      </.uk_dropdown>
+                    </div>
+
+                    <div class="uk-inline">
+                      <.uk_button>Bottom Right</.uk_button>
+                      <.uk_dropdown pos="bottom-right">
+                        <p>Positioned bottom-right.</p>
+                      </.uk_dropdown>
+                    </div>
+
+                    <div class="uk-inline">
+                      <.uk_button>Right Top</.uk_button>
+                      <.uk_dropdown pos="right-top">
+                        <p>Positioned right-top.</p>
+                      </.uk_dropdown>
+                    </div>
+                  </div>
+
+                  <h3 class="uk-h4 uk-margin-top">Animation</h3>
+                  <div class="uk-flex gap-2 uk-flex-wrap">
+                    <div class="uk-inline">
+                      <.uk_button>Slide Top</.uk_button>
+                      <.uk_dropdown animation="slide-top" animate_out duration={700}>
+                        <p>Animated with slide-top.</p>
+                      </.uk_dropdown>
+                    </div>
+
+                    <div class="uk-inline">
+                      <.uk_button>Reveal Top</.uk_button>
+                      <.uk_dropdown animation="reveal-top" animate_out duration={500}>
+                        <p>Animated with reveal-top.</p>
+                      </.uk_dropdown>
+                    </div>
+                  </div>
                 </:body>
               </.uk_card>
             </section>

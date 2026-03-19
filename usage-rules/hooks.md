@@ -134,3 +134,4 @@ If you don't need server-side tab state, omit `active` and `on_change`:
   <li>Content 2</li>
 </.uk_switcher>
 ```
+

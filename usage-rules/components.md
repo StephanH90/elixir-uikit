@@ -196,6 +196,45 @@ Content container connected to a subnav switcher.
 
 **Attrs:** `id` (required), `animation`, `class`.
 
+### `uk_dropdown`
+
+Toggleable overlay triggered by an adjacent element. Wrap both the toggle and dropdown in a `uk-inline` container.
+
+```heex
+<%!-- Simple content dropdown --%>
+<div class="uk-inline">
+  <.uk_button>Hover</.uk_button>
+  <.uk_dropdown>
+    <p>Dropdown content</p>
+  </.uk_dropdown>
+</div>
+
+<%!-- Click-triggered with positioning --%>
+<div class="uk-inline">
+  <.uk_button>Click Me</.uk_button>
+  <.uk_dropdown mode="click" pos="top-center">
+    <p>Click-triggered dropdown</p>
+  </.uk_dropdown>
+</div>
+
+<%!-- Navigation dropdown --%>
+<div class="uk-inline">
+  <.uk_button>Menu</.uk_button>
+  <.uk_dropdown>
+    <:nav>
+      <li class="uk-active"><a href="/dashboard">Dashboard</a></li>
+      <li><a href="/settings">Settings</a></li>
+      <li class="uk-nav-header">More</li>
+      <li class="uk-nav-divider"></li>
+      <li><a href="/logout">Logout</a></li>
+    </:nav>
+  </.uk_dropdown>
+</div>
+```
+
+**Attrs:** `mode` (`click|hover|click, hover`), `pos` (e.g. `bottom-left`, `top-center`, `right-top`), `offset`, `delay_show`, `delay_hide`, `stretch` (`true|x|y`), `animation`, `animate_out`, `duration`, `flip`, `shift`, `auto_update`, `close_on_scroll`, `large`, `class`.
+**Slots:** `nav` (accepts `class` — place `<li>` elements inside for a `uk-dropdown-nav` list), `inner_block`.
+
 ### `uk_comment`
 
 Displays user-generated content with avatar, author info, and body. Use `primary` for highlighted comments (e.g. admin responses).

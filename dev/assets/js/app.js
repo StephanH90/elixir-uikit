@@ -25,9 +25,9 @@ import {LiveSocket} from "phoenix_live_view"
 import {hooks as colocatedHooks} from "phoenix-colocated/dev"
 import topbar from "../vendor/topbar"
 
-import UIkit from "uikit"
-import Icons from "uikit/dist/js/uikit-icons"
-import UikitHooks from "uikit_ex"
+import UIkit from "../../../priv/vendor/uikit/js/uikit.min.js"
+import Icons from "../../../priv/vendor/uikit/js/uikit-icons.min.js"
+import UikitHooks from "../../../assets/js/index.js"
 
 UIkit.use(Icons)
 window.UIkit = UIkit

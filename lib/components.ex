@@ -936,6 +936,124 @@ defmodule Uikit.Components do
   end
 
   @doc """
+  Renders a UIkit dropdown.
+
+  Dropdowns are toggleable overlays that can contain any content. The toggle element
+  (typically a button) should be placed immediately before the dropdown, or both can be
+  wrapped in a `uk-inline` container.
+
+  ## Examples
+
+      <div class="uk-inline">
+        <.uk_button>Hover</.uk_button>
+        <.uk_dropdown>
+          <p>Dropdown content</p>
+        </.uk_dropdown>
+      </div>
+
+      <div class="uk-inline">
+        <.uk_button>Click Me</.uk_button>
+        <.uk_dropdown mode="click" pos="top-center">
+          <p>Click-triggered dropdown</p>
+        </.uk_dropdown>
+      </div>
+
+      <div class="uk-inline">
+        <.uk_button>Navigation</.uk_button>
+        <.uk_dropdown>
+          <:nav>
+            <li class="uk-active"><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/settings">Settings</a></li>
+            <li class="uk-nav-header">More</li>
+            <li class="uk-nav-divider"></li>
+            <li><a href="/logout">Logout</a></li>
+          </:nav>
+        </.uk_dropdown>
+      </div>
+  """
+  attr :mode, :string,
+    default: nil,
+    values: [nil, "click", "hover", "click, hover"],
+    doc: "the trigger mode (default: click, hover)"
+
+  attr :pos, :string,
+    default: nil,
+    doc: "the position of the dropdown (e.g. bottom-left, top-center, right-top)"
+
+  attr :offset, :integer, default: nil, doc: "offset in pixels from the toggle"
+  attr :delay_show, :integer, default: nil, doc: "delay in ms before showing on hover"
+  attr :delay_hide, :integer, default: nil, doc: "delay in ms before hiding on hover loss"
+
+  attr :stretch, :string,
+    default: nil,
+    values: [nil, "true", "x", "y"],
+    doc: "stretch the dropdown to fill available space"
+
+  attr :animation, :string,
+    default: nil,
+    doc: "the animation class (e.g. uk-animation-slide-top-small)"
+
+  attr :animate_out, :boolean, default: false, doc: "whether to animate when closing"
+  attr :duration, :integer, default: nil, doc: "animation duration in ms"
+  attr :flip, :boolean, default: nil, doc: "whether to flip if there is not enough space"
+  attr :shift, :boolean, default: nil, doc: "whether to shift to stay within the boundary"
+
+  attr :auto_update, :boolean,
+    default: nil,
+    doc: "whether to reposition on scroll/resize"
+
+  attr :close_on_scroll, :boolean, default: false, doc: "whether to close on scroll"
+  attr :large, :boolean, default: false, doc: "whether to use larger padding"
+  attr :class, :any, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the dropdown container"
+
+  slot :nav, doc: "renders a uk-nav uk-dropdown-nav list. Place <li> elements inside." do
+    attr :class, :any, doc: "additional CSS classes for the nav"
+  end
+
+  slot :inner_block, doc: "the dropdown content"
+
+  def uk_dropdown(assigns) do
+    dropdown_opts =
+      [
+        assigns.mode && "mode: #{assigns.mode}",
+        assigns.pos && "pos: #{assigns.pos}",
+        assigns.offset && "offset: #{assigns.offset}",
+        assigns.delay_show && "delay-show: #{assigns.delay_show}",
+        assigns.delay_hide && "delay-hide: #{assigns.delay_hide}",
+        assigns.stretch && "stretch: #{assigns.stretch}",
+        assigns.animation && "animation: #{assigns.animation}",
+        assigns.animate_out && "animate-out: true",
+        assigns.duration && "duration: #{assigns.duration}",
+        assigns.flip == false && "flip: false",
+        assigns.shift == false && "shift: false",
+        assigns.auto_update == false && "auto-update: false",
+        assigns.close_on_scroll && "close-on-scroll: true"
+      ]
+      |> Enum.reject(&(!&1))
+      |> Enum.join("; ")
+
+    assigns = assign(assigns, :dropdown_opts, dropdown_opts)
+
+    ~H"""
+    <div
+      uk-dropdown={if @dropdown_opts == "", do: true, else: @dropdown_opts}
+      class={[
+        "uk-drop uk-dropdown",
+        @large && "uk-dropdown-large",
+        @class
+      ]}
+      {@rest}
+    >
+      <ul :if={@nav != []} class={["uk-nav uk-dropdown-nav", Enum.at(@nav, 0)[:class]]}>
+        {render_slot(@nav)}
+      </ul>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
+
+  @doc """
   Renders a UIkit comment list for threaded comment layouts.
 
   Wrap comments in `<li>` elements. Nest a `<ul>` inside an `<li>` for replies.
