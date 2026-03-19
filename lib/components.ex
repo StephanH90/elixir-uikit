@@ -12,6 +12,12 @@ defmodule Uikit.Components do
   """
   use Phoenix.Component
 
+  defp uikit_opts(opts) do
+    opts
+    |> Enum.filter(& &1)
+    |> Enum.join("; ")
+  end
+
   @doc """
   Renders a UIkit button.
 
@@ -432,12 +438,10 @@ defmodule Uikit.Components do
   end
 
   defp build_icon_opts(assigns) do
-    [
+    uikit_opts([
       "icon: #{assigns.name}",
       assigns.ratio != 1 && "ratio: #{assigns.ratio}"
-    ]
-    |> Enum.reject(&(!&1))
-    |> Enum.join("; ")
+    ])
   end
 
   defp build_icon_class(assigns) do
@@ -516,14 +520,12 @@ defmodule Uikit.Components do
 
   def uk_modal(assigns) do
     modal_opts =
-      [
+      uikit_opts([
         assigns.esc_close == false && "esc-close: false",
         assigns.bg_close == false && "bg-close: false",
         assigns.stack == true && "stack: true",
         "container: #{assigns.container}"
-      ]
-      |> Enum.reject(&(!&1))
-      |> Enum.join("; ")
+      ])
 
     assigns =
       assigns
@@ -684,11 +686,9 @@ defmodule Uikit.Components do
   end
 
   defp build_spinner_opts(assigns) do
-    [
+    uikit_opts([
       assigns.ratio != 1 && "ratio: #{assigns.ratio}"
-    ]
-    |> Enum.reject(&(!&1))
-    |> Enum.join("; ")
+    ])
   end
 
   @doc """
@@ -1017,7 +1017,7 @@ defmodule Uikit.Components do
 
   def uk_dropdown(assigns) do
     dropdown_opts =
-      [
+      uikit_opts([
         assigns.mode && "mode: #{assigns.mode}",
         assigns.pos && "pos: #{assigns.pos}",
         assigns.offset && "offset: #{assigns.offset}",
@@ -1031,9 +1031,7 @@ defmodule Uikit.Components do
         assigns.shift == false && "shift: false",
         assigns.auto_update == false && "auto-update: false",
         assigns.close_on_scroll && "close-on-scroll: true"
-      ]
-      |> Enum.reject(&(!&1))
-      |> Enum.join("; ")
+      ])
 
     assigns = assign(assigns, :dropdown_opts, dropdown_opts)
 
