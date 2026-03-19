@@ -1,6 +1,6 @@
 # LiveView Hooks
 
-`elixir_uikit` exports three LiveView hooks: **Sortable**, **Modal**, and **Switcher**. These are automatically registered when you run `mix uikit.setup`.
+`elixir_uikit` exports four LiveView hooks: **Sortable**, **Modal**, **Dropdown**, and **Switcher**. These are automatically registered when you run `mix uikit.setup`.
 
 ## Sortable Hook
 
@@ -80,6 +80,21 @@ If you don't need server control, skip `show` and use `uk_toggle` on a button:
   <:body>Content</:body>
 </.uk_modal>
 ```
+
+---
+
+## Dropdown Hook
+
+Preserves dropdown open state across LiveView DOM patches. Without this hook, LiveView's morphdom strips UIkit's `uk-open` class on every server update, causing open dropdowns to close unexpectedly.
+
+### How it works
+
+The hook is automatically attached by the `uk_dropdown` component — no manual setup needed. Before each LiveView patch, it records whether the dropdown is open. After the patch, it restores the open state if it was active.
+
+### Requirements
+
+- The `uk_dropdown` component requires a stable `id` (needed for the hook).
+- The `uk-drop uk-dropdown` classes are pre-declared in the server HTML to prevent morphdom from stripping UIkit's positioning styles.
 
 ---
 

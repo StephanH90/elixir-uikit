@@ -2,12 +2,15 @@ defmodule DevWeb.HomeLive do
   use DevWeb, :live_view
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: :timer.send_interval(1000, self(), :tick)
+
     {:ok,
      assign(socket,
        items: [],
        show_programmatic_modal: false,
        loading: false,
-       switcher_index: 0
+       switcher_index: 0,
+       counter: 0
      )}
   end
 
@@ -338,28 +341,37 @@ defmodule DevWeb.HomeLive do
               <h2 class="uk-h2 uk-margin-small-bottom">Dropdown</h2>
               <.uk_card>
                 <:body>
+                  <p class="uk-text-meta uk-margin-small-bottom">
+                    Server counter: <strong>{@counter}</strong>
+                    — updates every second. Open a dropdown to see it update inside.
+                  </p>
                   <h3 class="uk-h4">Hover (default)</h3>
                   <div class="uk-flex gap-2 uk-flex-wrap">
                     <div class="uk-inline">
                       <.uk_button>Hover</.uk_button>
-                      <.uk_dropdown>
+                      <.uk_dropdown id="dd-hover">
                         <p>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+                          Counter: <strong>{@counter}</strong>
+                        </p>
+                        <p class="uk-text-meta">
+                          This value updates every second via LiveView, even while the dropdown is open.
                         </p>
                       </.uk_dropdown>
                     </div>
 
                     <div class="uk-inline">
                       <.uk_button variant="primary">Click Toggle</.uk_button>
-                      <.uk_dropdown mode="click">
-                        <p>This dropdown opens on click only.</p>
+                      <.uk_dropdown id="dd-click" mode="click">
+                        <p>Counter: <strong>{@counter}</strong></p>
+                        <p class="uk-text-meta">Click-triggered dropdown with live counter.</p>
                       </.uk_dropdown>
                     </div>
 
                     <div class="uk-inline">
                       <.uk_button variant="secondary">Large</.uk_button>
-                      <.uk_dropdown large>
-                        <p>This dropdown has larger padding.</p>
+                      <.uk_dropdown id="dd-large" large>
+                        <p>Counter: <strong>{@counter}</strong></p>
+                        <p class="uk-text-meta">Large dropdown with live counter.</p>
                       </.uk_dropdown>
                     </div>
                   </div>
@@ -368,7 +380,7 @@ defmodule DevWeb.HomeLive do
                   <div class="uk-flex gap-2 uk-flex-wrap">
                     <div class="uk-inline">
                       <.uk_button>Nav Dropdown</.uk_button>
-                      <.uk_dropdown>
+                      <.uk_dropdown id="dd-nav">
                         <:nav>
                           <li class="uk-active"><a href="#">Active</a></li>
                           <li><a href="#">Item</a></li>
@@ -383,7 +395,7 @@ defmodule DevWeb.HomeLive do
 
                     <div class="uk-inline">
                       <.uk_button variant="primary">Click Nav</.uk_button>
-                      <.uk_dropdown mode="click">
+                      <.uk_dropdown id="dd-click-nav" mode="click">
                         <:nav>
                           <li><a href="#">Dashboard</a></li>
                           <li><a href="#">Settings</a></li>
@@ -398,21 +410,21 @@ defmodule DevWeb.HomeLive do
                   <div class="uk-flex gap-2 uk-flex-wrap">
                     <div class="uk-inline">
                       <.uk_button>Top Center</.uk_button>
-                      <.uk_dropdown pos="top-center">
+                      <.uk_dropdown id="dd-top-center" pos="top-center">
                         <p>Positioned top-center.</p>
                       </.uk_dropdown>
                     </div>
 
                     <div class="uk-inline">
                       <.uk_button>Bottom Right</.uk_button>
-                      <.uk_dropdown pos="bottom-right">
+                      <.uk_dropdown id="dd-bottom-right" pos="bottom-right">
                         <p>Positioned bottom-right.</p>
                       </.uk_dropdown>
                     </div>
 
                     <div class="uk-inline">
                       <.uk_button>Right Top</.uk_button>
-                      <.uk_dropdown pos="right-top">
+                      <.uk_dropdown id="dd-right-top" pos="right-top">
                         <p>Positioned right-top.</p>
                       </.uk_dropdown>
                     </div>
@@ -422,14 +434,14 @@ defmodule DevWeb.HomeLive do
                   <div class="uk-flex gap-2 uk-flex-wrap">
                     <div class="uk-inline">
                       <.uk_button>Slide Top</.uk_button>
-                      <.uk_dropdown animation="slide-top" animate_out duration={700}>
+                      <.uk_dropdown id="dd-slide-top" animation="slide-top" animate_out duration={700}>
                         <p>Animated with slide-top.</p>
                       </.uk_dropdown>
                     </div>
 
                     <div class="uk-inline">
                       <.uk_button>Reveal Top</.uk_button>
-                      <.uk_dropdown animation="reveal-top" animate_out duration={500}>
+                      <.uk_dropdown id="dd-reveal-top" animation="reveal-top" animate_out duration={500}>
                         <p>Animated with reveal-top.</p>
                       </.uk_dropdown>
                     </div>
@@ -731,6 +743,10 @@ defmodule DevWeb.HomeLive do
 
   def handle_event("uikit:modal_closed", _params, socket) do
     {:noreply, assign(socket, show_programmatic_modal: false)}
+  end
+
+  def handle_info(:tick, socket) do
+    {:noreply, assign(socket, counter: socket.assigns.counter + 1)}
   end
 
   def handle_info(:finished_loading, socket) do

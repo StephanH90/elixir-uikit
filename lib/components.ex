@@ -946,21 +946,21 @@ defmodule Uikit.Components do
 
       <div class="uk-inline">
         <.uk_button>Hover</.uk_button>
-        <.uk_dropdown>
+        <.uk_dropdown id="my-dropdown">
           <p>Dropdown content</p>
         </.uk_dropdown>
       </div>
 
       <div class="uk-inline">
         <.uk_button>Click Me</.uk_button>
-        <.uk_dropdown mode="click" pos="top-center">
+        <.uk_dropdown id="click-dropdown" mode="click" pos="top-center">
           <p>Click-triggered dropdown</p>
         </.uk_dropdown>
       </div>
 
       <div class="uk-inline">
         <.uk_button>Navigation</.uk_button>
-        <.uk_dropdown>
+        <.uk_dropdown id="nav-dropdown">
           <:nav>
             <li class="uk-active"><a href="/dashboard">Dashboard</a></li>
             <li><a href="/settings">Settings</a></li>
@@ -971,6 +971,8 @@ defmodule Uikit.Components do
         </.uk_dropdown>
       </div>
   """
+  attr :id, :string, required: true, doc: "stable DOM id (required for LiveView hook)"
+
   attr :mode, :string,
     default: nil,
     values: [nil, "click", "hover", "click, hover"],
@@ -1037,6 +1039,8 @@ defmodule Uikit.Components do
 
     ~H"""
     <div
+      id={@id}
+      phx-hook="Dropdown"
       uk-dropdown={if @dropdown_opts == "", do: true, else: @dropdown_opts}
       class={[
         "uk-drop uk-dropdown",

@@ -57,6 +57,31 @@ const Modal = {
   }
 };
 
+const Dropdown = {
+  mounted() {
+    this.dropdown = UIkit.dropdown(this.el);
+  },
+  beforeUpdate() {
+    this._wasOpen = this.el.classList.contains("uk-open");
+    if (this._wasOpen) {
+      this._savedStyle = this.el.getAttribute("style");
+    }
+  },
+  updated() {
+    if (this._wasOpen) {
+      this.el.classList.add("uk-open");
+      if (this._savedStyle) {
+        this.el.setAttribute("style", this._savedStyle);
+      }
+    }
+  },
+  destroyed() {
+    if (this.dropdown) {
+      this.dropdown.$destroy();
+    }
+  }
+};
+
 const Switcher = {
   mounted() {
     this.switcher = UIkit.switcher(this.el);
@@ -106,5 +131,6 @@ const Switcher = {
 export default {
   Sortable,
   Modal,
+  Dropdown,
   Switcher
 };
