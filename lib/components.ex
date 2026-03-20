@@ -12,11 +12,27 @@ defmodule Uikit.Components do
   """
   use Phoenix.Component
 
-  defp uikit_opts(opts) do
-    opts
+  # Builds a UIkit JS option string from assigns and a declarative spec.
+  #
+  # Spec entries:
+  #   :attr_name          — emit "attr-name: value" when truthy
+  #   {:attr_name, :flag} — emit "attr-name: true" when truthy
+  #   {:attr_name, :unless} — emit "attr-name: false" when value == false
+  #   "raw: string"       — always included as-is
+  defp uikit_opts(assigns, specs) do
+    specs
+    |> Enum.map(fn
+      spec when is_binary(spec) -> spec
+      false -> nil
+      {key, :flag} -> Map.get(assigns, key) && "#{to_kebab(key)}: true"
+      {key, :unless} -> Map.get(assigns, key) == false && "#{to_kebab(key)}: false"
+      key when is_atom(key) -> Map.get(assigns, key) && "#{to_kebab(key)}: #{Map.get(assigns, key)}"
+    end)
     |> Enum.filter(& &1)
     |> Enum.join("; ")
   end
+
+  defp to_kebab(atom), do: atom |> Atom.to_string() |> String.replace("_", "-")
 
   @doc """
   Renders a UIkit button.
@@ -369,13 +385,7 @@ defmodule Uikit.Components do
 
   def uk_sortable(assigns) do
     sortable_opts =
-      uikit_opts([
-        assigns.group && "group: #{assigns.group}",
-        assigns.animation && "animation: #{assigns.animation}",
-        assigns.threshold && "threshold: #{assigns.threshold}",
-        assigns.handle && "handle: #{assigns.handle}",
-        assigns.cls_custom && "cls-custom: #{assigns.cls_custom}"
-      ])
+      uikit_opts(assigns, [:group, :animation, :threshold, :handle, :cls_custom])
 
     assigns = assign(assigns, :sortable_opts, sortable_opts)
 
@@ -435,7 +445,7 @@ defmodule Uikit.Components do
   end
 
   defp build_icon_opts(assigns) do
-    uikit_opts([
+    uikit_opts(assigns, [
       "icon: #{assigns.name}",
       assigns.ratio != 1 && "ratio: #{assigns.ratio}"
     ])
@@ -517,10 +527,10 @@ defmodule Uikit.Components do
 
   def uk_modal(assigns) do
     modal_opts =
-      uikit_opts([
-        assigns.esc_close == false && "esc-close: false",
-        assigns.bg_close == false && "bg-close: false",
-        assigns.stack == true && "stack: true",
+      uikit_opts(assigns, [
+        {:esc_close, :unless},
+        {:bg_close, :unless},
+        {:stack, :flag},
         "container: #{assigns.container}"
       ])
 
@@ -662,7 +672,7 @@ defmodule Uikit.Components do
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the spinner container"
 
   def uk_spinner(assigns) do
-    spinner_opts = uikit_opts([assigns.ratio != 1 && "ratio: #{assigns.ratio}"])
+    spinner_opts = uikit_opts(assigns, [assigns.ratio != 1 && "ratio: #{assigns.ratio}"])
     assigns = assign(assigns, :spinner_opts, if(spinner_opts == "", do: true, else: spinner_opts))
 
     ~H"""
@@ -996,20 +1006,14 @@ defmodule Uikit.Components do
 
   def uk_dropdown(assigns) do
     dropdown_opts =
-      uikit_opts([
-        assigns.mode && "mode: #{assigns.mode}",
-        assigns.pos && "pos: #{assigns.pos}",
-        assigns.offset && "offset: #{assigns.offset}",
-        assigns.delay_show && "delay-show: #{assigns.delay_show}",
-        assigns.delay_hide && "delay-hide: #{assigns.delay_hide}",
-        assigns.stretch && "stretch: #{assigns.stretch}",
-        assigns.animation && "animation: #{assigns.animation}",
-        assigns.animate_out && "animate-out: true",
-        assigns.duration && "duration: #{assigns.duration}",
-        assigns.flip == false && "flip: false",
-        assigns.shift == false && "shift: false",
-        assigns.auto_update == false && "auto-update: false",
-        assigns.close_on_scroll && "close-on-scroll: true"
+      uikit_opts(assigns, [
+        :mode, :pos, :offset, :delay_show, :delay_hide, :stretch,
+        :animation, :duration,
+        {:animate_out, :flag},
+        {:flip, :unless},
+        {:shift, :unless},
+        {:auto_update, :unless},
+        {:close_on_scroll, :flag}
       ])
 
     assigns = assign(assigns, :dropdown_opts, dropdown_opts)
