@@ -57,6 +57,16 @@ const Modal = {
   }
 };
 
+const Icon = {
+  mounted() {
+    UIkit.icon(this.el);
+  },
+  updated() {
+    // Re-render SVG when the uk-icon attribute changes (e.g. new icon name)
+    UIkit.icon(this.el);
+  }
+};
+
 const Dropdown = {
   mounted() {
     this.dropdown = UIkit.dropdown(this.el);
@@ -131,6 +141,7 @@ const Switcher = {
 export default {
   Sortable,
   Modal,
+  Icon,
   Dropdown,
   Switcher
 };

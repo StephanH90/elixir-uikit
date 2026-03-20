@@ -1,6 +1,6 @@
 # LiveView Hooks
 
-`elixir_uikit` exports four LiveView hooks: **Sortable**, **Modal**, **Dropdown**, and **Switcher**. These are automatically registered when you run `mix uikit.setup`.
+`elixir_uikit` exports five LiveView hooks: **Sortable**, **Modal**, **Icon**, **Dropdown**, and **Switcher**. These are automatically registered when you run `mix uikit.setup`.
 
 ## Sortable Hook
 
@@ -80,6 +80,20 @@ If you don't need server control, skip `show` and use `uk_toggle` on a button:
   <:body>Content</:body>
 </.uk_modal>
 ```
+
+---
+
+## Icon Hook
+
+Allows UIkit icons to update dynamically when server assigns change. UIkit replaces icon elements with inline SVG — without the hook, `phx-update="ignore"` was needed, which prevented any server-driven icon changes.
+
+### How it works
+
+The hook is automatically attached by the `uk_icon` component. On `mounted()` and `updated()`, it calls `UIkit.icon()` to (re-)render the SVG from the current `uk-icon` attribute.
+
+### Requirements
+
+- The `uk_icon` component requires a stable `id` (needed for the hook).
 
 ---
 

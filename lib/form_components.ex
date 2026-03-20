@@ -158,9 +158,7 @@ defmodule Uikit.FormComponents do
   end
 
   def uk_input(%{type: "select"} = assigns) do
-    effective_state = if assigns.errors == [], do: assigns.state, else: assigns.state || "danger"
-
-    assigns = assign(assigns, :effective_state, effective_state)
+    assigns = assign(assigns, :effective_state, effective_state(assigns.errors, assigns.state))
 
     ~H"""
     <div>
@@ -190,9 +188,7 @@ defmodule Uikit.FormComponents do
   end
 
   def uk_input(%{type: "textarea"} = assigns) do
-    effective_state = if assigns.errors == [], do: assigns.state, else: assigns.state || "danger"
-
-    assigns = assign(assigns, :effective_state, effective_state)
+    assigns = assign(assigns, :effective_state, effective_state(assigns.errors, assigns.state))
 
     ~H"""
     <div>
@@ -219,9 +215,7 @@ defmodule Uikit.FormComponents do
 
   # Catch-all for text, email, password, date, number, url, tel, etc.
   def uk_input(assigns) do
-    effective_state = if assigns.errors == [], do: assigns.state, else: assigns.state || "danger"
-
-    assigns = assign(assigns, :effective_state, effective_state)
+    assigns = assign(assigns, :effective_state, effective_state(assigns.errors, assigns.state))
 
     ~H"""
     <div>
@@ -299,13 +293,11 @@ defmodule Uikit.FormComponents do
         Phoenix.HTML.Form.normalize_value("checkbox", assigns[:value])
       end)
 
-    effective_state = if assigns.errors == [], do: assigns.state, else: assigns.state || "danger"
-
-    assigns = assign(assigns, :effective_state, effective_state)
+    assigns = assign(assigns, :effective_state, effective_state(assigns.errors, assigns.state))
 
     ~H"""
     <div>
-      <div style="display: inline-flex; align-items: center; gap: 0.4em">
+      <div class="uk-flex uk-flex-middle uk-flex-inline" style="gap: 0.4em">
         <input
           type="hidden"
           name={@name}
@@ -375,7 +367,7 @@ defmodule Uikit.FormComponents do
 
   def uk_radio(assigns) do
     ~H"""
-    <div style="display: inline-flex; align-items: center; gap: 0.4em">
+    <div class="uk-flex uk-flex-middle uk-flex-inline" style="gap: 0.4em">
       <input
         type="radio"
         id={@id}
@@ -588,6 +580,10 @@ defmodule Uikit.FormComponents do
       {render_slot(@inner_block)}
     </div>
     """
+  end
+
+  defp effective_state(errors, state) do
+    if errors == [], do: state, else: state || "danger"
   end
 
   # Private component to render a list of field errors below an input.

@@ -160,7 +160,6 @@ defmodule Uikit.Components do
     attr :class, :any, doc: "additional CSS classes for the footer"
   end
 
-  slot :close, doc: "custom close button. If not provided, a default one is included"
   slot :inner_block, doc: "inner content, if not using structured slots"
 
   def uk_card(assigns) do
@@ -370,15 +369,13 @@ defmodule Uikit.Components do
 
   def uk_sortable(assigns) do
     sortable_opts =
-      [
+      uikit_opts([
         assigns.group && "group: #{assigns.group}",
         assigns.animation && "animation: #{assigns.animation}",
         assigns.threshold && "threshold: #{assigns.threshold}",
         assigns.handle && "handle: #{assigns.handle}",
         assigns.cls_custom && "cls-custom: #{assigns.cls_custom}"
-      ]
-      |> Enum.reject(&is_nil/1)
-      |> Enum.join("; ")
+      ])
 
     assigns = assign(assigns, :sortable_opts, sortable_opts)
 
@@ -403,14 +400,14 @@ defmodule Uikit.Components do
 
   ## Examples
 
-      <.uk_icon name="check" />
-      <.uk_icon name="heart" ratio={2} />
-      <.uk_icon name="trash" button href="/delete" />
-      <.uk_icon name="twitter" href="https://twitter.com" />
+      <.uk_icon id="icon-check" name="check" />
+      <.uk_icon id="icon-heart" name="heart" ratio={2} />
+      <.uk_icon id="icon-trash" name="trash" button href="/delete" />
+      <.uk_icon id="icon-twitter" name="twitter" href="https://twitter.com" />
   """
   attr :name, :string, required: true, doc: "the name of the icon"
   attr :ratio, :any, default: 1, doc: "the size multiplier of the icon (integer or float)"
-  attr :id, :string, default: nil, doc: "the DOM ID of the icon"
+  attr :id, :string, required: true, doc: "stable DOM id (required for LiveView hook)"
   attr :button, :boolean, default: false, doc: "whether to render as an icon button"
   attr :class, :any, doc: "additional CSS classes"
 
@@ -428,11 +425,11 @@ defmodule Uikit.Components do
 
     if assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch] do
       ~H"""
-      <.link id={@id} class={@class} phx-update="ignore" {@rest}></.link>
+      <.link id={@id} phx-hook="Icon" class={@class} {@rest}></.link>
       """
     else
       ~H"""
-      <span id={@id} class={@class} phx-update="ignore" {@rest}></span>
+      <span id={@id} phx-hook="Icon" class={@class} {@rest}></span>
       """
     end
   end
@@ -665,30 +662,12 @@ defmodule Uikit.Components do
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the spinner container"
 
   def uk_spinner(assigns) do
-    assigns =
-      assigns
-      |> assign(:spinner_opts, build_spinner_opts(assigns))
-
-    assigns =
-      assign(
-        assigns,
-        :rest,
-        Map.put(
-          assigns.rest,
-          :"uk-spinner",
-          if(assigns.spinner_opts == "", do: true, else: assigns.spinner_opts)
-        )
-      )
+    spinner_opts = uikit_opts([assigns.ratio != 1 && "ratio: #{assigns.ratio}"])
+    assigns = assign(assigns, :spinner_opts, if(spinner_opts == "", do: true, else: spinner_opts))
 
     ~H"""
-    <div id={@id} class={@class} phx-update="ignore" {@rest}></div>
+    <div id={@id} uk-spinner={@spinner_opts} class={@class} {@rest}></div>
     """
-  end
-
-  defp build_spinner_opts(assigns) do
-    uikit_opts([
-      assigns.ratio != 1 && "ratio: #{assigns.ratio}"
-    ])
   end
 
   @doc """

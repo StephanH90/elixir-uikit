@@ -109,12 +109,12 @@ Drag-and-drop reorderable container. **Every child must have a unique `id`.**
 Renders a UIkit SVG icon. Becomes a link when `href`/`navigate`/`patch` is set, or a button with `button={true}`.
 
 ```heex
-<.uk_icon name="check" />
-<.uk_icon name="heart" ratio={2} />
-<.uk_icon name="settings" button navigate={~p"/settings"} />
+<.uk_icon id="icon-check" name="check" />
+<.uk_icon id="icon-heart" name="heart" ratio={2} />
+<.uk_icon id="icon-settings" name="settings" button navigate={~p"/settings"} />
 ```
 
-**Attrs:** `name` (required), `ratio` (default 1), `id`, `button`, `class`. Global attrs include `href`, `navigate`, `patch`.
+**Attrs:** `id` (required), `name` (required), `ratio` (default 1), `button`, `class`. Global attrs include `href`, `navigate`, `patch`.
 
 ### `uk_modal`
 
