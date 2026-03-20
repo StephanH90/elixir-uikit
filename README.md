@@ -59,7 +59,32 @@ Components are automatically imported by the installer. Use them in your HEEx te
 - `uk_button`, `uk_badge`, `uk_label`, `uk_icon`, `uk_spinner`
 - `uk_card`, `uk_card_title`, `uk_container`, `uk_section`, `uk_grid`
 - `uk_modal`, `uk_modal_title`, `uk_sortable`, `uk_subnav`, `uk_switcher`
-- `uk_comment`, `uk_comment_list`
+- `uk_comment`, `uk_comment_list`, `uk_dropdown`, `uk_alert`
+- `uk_table`
+
+#### `uk_table` example
+
+```heex
+<.uk_table striped divider responsive>
+  <:head>
+    <tr>
+      <th class="uk-table-shrink">#</th>
+      <th class="uk-table-expand">Name</th>
+      <th>Status</th>
+    </tr>
+  </:head>
+  <:body>
+    <tr :for={row <- @rows} id={"row-#{row.id}"}>
+      <td>{row.id}</td>
+      <td>{row.name}</td>
+      <td>{row.status}</td>
+    </tr>
+  </:body>
+</.uk_table>
+```
+
+Modifiers: `striped`, `divider`, `hover`, `small`, `large`, `justify`, `middle`, `responsive`, `caption_bottom`.
+Column-level classes (`uk-table-shrink`, `uk-table-expand`, `uk-table-link`) are applied directly to `<th>` / `<td>` elements.
 
 ### Form Components
 

@@ -1123,4 +1123,88 @@ defmodule Uikit.Components do
     </div>
     """
   end
+
+  @doc """
+  Renders a UIkit table.
+
+  Applies UIkit table styling modifiers and optionally wraps in a responsive
+  scrollable container. Use standard `<thead>`, `<tbody>`, and `<td>` elements
+  inside the structured slots.
+
+  Column-level classes (`uk-table-shrink`, `uk-table-expand`, `uk-table-link`)
+  are applied directly on `<th>` or `<td>` elements, not as component attributes.
+
+  ## Examples
+
+      <.uk_table striped divider>
+        <:head>
+          <tr>
+            <th class="uk-table-shrink">#</th>
+            <th class="uk-table-expand">Name</th>
+            <th>Status</th>
+          </tr>
+        </:head>
+        <:body>
+          <tr :for={row <- @rows}>
+            <td>{row.id}</td>
+            <td>{row.name}</td>
+            <td>{row.status}</td>
+          </tr>
+        </:body>
+      </.uk_table>
+
+      <.uk_table hover responsive>
+        <:head>
+          <tr><th>Column</th></tr>
+        </:head>
+        <:body>
+          <tr><td>Long content that scrolls horizontally on small screens</td></tr>
+        </:body>
+      </.uk_table>
+  """
+  attr :striped, :boolean, default: false, doc: "alternates row background colors"
+  attr :divider, :boolean, default: false, doc: "adds dividers between rows"
+  attr :hover, :boolean, default: false, doc: "adds hover highlighting to rows"
+  attr :small, :boolean, default: false, doc: "reduces cell padding"
+  attr :large, :boolean, default: false, doc: "increases cell padding"
+  attr :justify, :boolean, default: false, doc: "removes padding from outermost cells"
+  attr :middle, :boolean, default: false, doc: "vertically centers cell content"
+  attr :responsive, :boolean, default: false, doc: "wraps in a scrollable container for small screens"
+  attr :caption_bottom, :boolean, default: false, doc: "moves the caption below the table"
+  attr :class, :any, default: nil, doc: "additional CSS classes for the table element"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the table element"
+
+  slot :caption, doc: "the table caption"
+  slot :head, doc: "the table header content (place <tr> elements inside)"
+  slot :foot, doc: "the table footer content (place <tr> elements inside)"
+  slot :body, doc: "the table body content (place <tr> elements inside)"
+  slot :inner_block, doc: "raw table content, used when not using structured slots"
+
+  def uk_table(assigns) do
+    ~H"""
+    <div class={@responsive && "uk-overflow-auto"}>
+      <table
+        class={[
+          "uk-table",
+          @striped && "uk-table-striped",
+          @divider && "uk-table-divider",
+          @hover && "uk-table-hover",
+          @small && "uk-table-small",
+          @large && "uk-table-large",
+          @justify && "uk-table-justify",
+          @middle && "uk-table-middle",
+          @caption_bottom && "uk-table-caption-bottom",
+          @class
+        ]}
+        {@rest}
+      >
+        <caption :if={@caption != []}>{render_slot(@caption)}</caption>
+        <thead :if={@head != []}>{render_slot(@head)}</thead>
+        <tfoot :if={@foot != []}>{render_slot(@foot)}</tfoot>
+        <tbody :if={@body != []}>{render_slot(@body)}</tbody>
+        {render_slot(@inner_block)}
+      </table>
+    </div>
+    """
+  end
 end

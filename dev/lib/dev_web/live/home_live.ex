@@ -11,7 +11,12 @@ defmodule DevWeb.HomeLive do
        loading: false,
        switcher_index: 0,
        counter: 0,
-       server_alert: nil
+       server_alert: nil,
+       table_rows: [
+         %{id: 1, name: "Alice", role: "Admin", status: "Active"},
+         %{id: 2, name: "Bob", role: "Editor", status: "Inactive"},
+         %{id: 3, name: "Carol", role: "Viewer", status: "Active"}
+       ]
      )}
   end
 
@@ -42,6 +47,7 @@ defmodule DevWeb.HomeLive do
               <li><a href="#dropdown">Dropdown</a></li>
               <li><a href="#alert">Alert</a></li>
               <li><a href="#comment">Comment</a></li>
+              <li><a href="#table">Table</a></li>
               <li class="uk-nav-divider"></li>
               <li class="uk-nav-header">Other Pages</li>
               <li><.link navigate="/forms">Form Components</.link></li>
@@ -525,7 +531,7 @@ defmodule DevWeb.HomeLive do
                   <h3 class="uk-h4 uk-margin-top">Threaded Comment List</h3>
                   <.uk_comment_list>
                     <li>
-                      <.uk_comment id="demo-thread-1" primary="aoo">
+                      <.uk_comment id="demo-thread-1">
                         <:avatar
                           src="https://getuikit.com/docs/images/avatar.jpg"
                           width="80"
@@ -601,6 +607,136 @@ defmodule DevWeb.HomeLive do
                       </.uk_comment>
                     </li>
                   </.uk_comment_list>
+                </:body>
+              </.uk_card>
+            </section>
+
+            <section id="table" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom">Table</h2>
+
+              <h3 class="uk-h4">Striped + Divider</h3>
+              <.uk_card>
+                <:body>
+                  <.uk_table striped divider>
+                    <:head>
+                      <tr>
+                        <th class="uk-table-shrink">#</th>
+                        <th class="uk-table-expand">Name</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                      </tr>
+                    </:head>
+                    <:body>
+                      <tr>
+                        <td>1</td>
+                        <td>Alice</td>
+                        <td>Admin</td>
+                        <td><.uk_label variant="success">Active</.uk_label></td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>Bob</td>
+                        <td>Editor</td>
+                        <td><.uk_label variant="warning">Inactive</.uk_label></td>
+                      </tr>
+                      <tr>
+                        <td>3</td>
+                        <td>Carol</td>
+                        <td>Viewer</td>
+                        <td><.uk_label variant="success">Active</.uk_label></td>
+                      </tr>
+                    </:body>
+                  </.uk_table>
+                </:body>
+              </.uk_card>
+
+              <h3 class="uk-h4 uk-margin-top">Hover + Small</h3>
+              <.uk_card>
+                <:body>
+                  <.uk_table hover small>
+                    <:head>
+                      <tr>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                      </tr>
+                    </:head>
+                    <:body>
+                      <tr>
+                        <td>Alice</td>
+                        <td>Admin</td>
+                        <td>Active</td>
+                      </tr>
+                      <tr>
+                        <td>Bob</td>
+                        <td>Editor</td>
+                        <td>Inactive</td>
+                      </tr>
+                    </:body>
+                  </.uk_table>
+                </:body>
+              </.uk_card>
+
+              <h3 class="uk-h4 uk-margin-top">Responsive (scroll on small screens)</h3>
+              <.uk_card>
+                <:body>
+                  <.uk_table divider responsive>
+                    <:head>
+                      <tr>
+                        <th>Column A</th>
+                        <th>Column B</th>
+                        <th>Column C</th>
+                        <th>Column D</th>
+                        <th>Column E</th>
+                        <th>Column F</th>
+                      </tr>
+                    </:head>
+                    <:body>
+                      <tr>
+                        <td>Alpha</td>
+                        <td>Beta</td>
+                        <td>Gamma</td>
+                        <td>Delta</td>
+                        <td>Epsilon</td>
+                        <td>Zeta</td>
+                      </tr>
+                      <tr>
+                        <td>Eta</td>
+                        <td>Theta</td>
+                        <td>Iota</td>
+                        <td>Kappa</td>
+                        <td>Lambda</td>
+                        <td>Mu</td>
+                      </tr>
+                    </:body>
+                  </.uk_table>
+                </:body>
+              </.uk_card>
+
+              <h3 class="uk-h4 uk-margin-top">LiveView-driven Table</h3>
+              <.uk_card>
+                <:body>
+                  <.uk_button id="add-table-row" phx-click="add_table_row" variant="primary">
+                    Add Row
+                  </.uk_button>
+                  <.uk_table id="live-table" striped divider class="uk-margin-top">
+                    <:head>
+                      <tr>
+                        <th class="uk-table-shrink">#</th>
+                        <th class="uk-table-expand">Name</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                      </tr>
+                    </:head>
+                    <:body>
+                      <tr :for={row <- @table_rows} id={"table-row-#{row.id}"}>
+                        <td>{row.id}</td>
+                        <td>{row.name}</td>
+                        <td>{row.role}</td>
+                        <td>{row.status}</td>
+                      </tr>
+                    </:body>
+                  </.uk_table>
                 </:body>
               </.uk_card>
             </section>
@@ -738,6 +874,23 @@ defmodule DevWeb.HomeLive do
       </.uk_container>
     </.uk_section>
     """
+  end
+
+  def handle_event("add_table_row", _params, socket) do
+    rows = socket.assigns.table_rows
+    next_id = (rows |> Enum.map(& &1.id) |> Enum.max()) + 1
+    names = ~w(Dave Eve Frank Grace Henry Iris)
+    roles = ~w(Admin Editor Viewer)
+    statuses = ~w(Active Inactive)
+
+    new_row = %{
+      id: next_id,
+      name: Enum.random(names),
+      role: Enum.random(roles),
+      status: Enum.random(statuses)
+    }
+
+    {:noreply, assign(socket, table_rows: rows ++ [new_row])}
   end
 
   def handle_event("add_item", _params, socket) do
