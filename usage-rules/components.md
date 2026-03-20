@@ -235,6 +235,21 @@ Toggleable overlay triggered by an adjacent element. Wrap both the toggle and dr
 **Attrs:** `id` (required), `mode` (`click|hover|click, hover`), `pos` (e.g. `bottom-left`, `top-center`, `right-top`), `offset`, `delay_show`, `delay_hide`, `stretch` (`true|x|y`), `animation`, `animate_out`, `duration`, `flip`, `shift`, `auto_update`, `close_on_scroll`, `large`, `class`.
 **Slots:** `nav` (accepts `class` — place `<li>` elements inside for a `uk-dropdown-nav` list), `inner_block`.
 
+### `uk_alert`
+
+Displays feedback messages with optional close button and style variants.
+
+```heex
+<.uk_alert>Default alert.</.uk_alert>
+<.uk_alert variant="success" closable>Operation completed.</.uk_alert>
+<.uk_alert variant="danger" closable>
+  <h3>Error</h3>
+  <p>Something went wrong.</p>
+</.uk_alert>
+```
+
+**Attrs:** `variant` (`primary|success|warning|danger`), `closable`, `animation` (default true), `duration` (default 150), `class`.
+
 ### `uk_comment`
 
 Displays user-generated content with avatar, author info, and body. Use `primary` for highlighted comments (e.g. admin responses).

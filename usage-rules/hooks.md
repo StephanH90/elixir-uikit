@@ -11,7 +11,7 @@ let liveSocket = new LiveSocket("/live", Socket, {
 })
 ```
 
-The `onBeforeElUpdated` callback preserves UIkit's runtime DOM state (icon SVGs, dropdown open state/positioning) across LiveView patches. Without it, morphdom strips UIkit's injected content on every server update.
+The `onBeforeElUpdated` callback preserves UIkit's runtime DOM state (icon SVGs, runtime classes, dropdown open state/positioning) across LiveView patches. Without it, morphdom strips UIkit's injected content on every server update.
 
 ## Sortable Hook
 
@@ -96,13 +96,17 @@ If you don't need server control, skip `show` and use `uk_toggle` on a button:
 
 ## `onBeforeElUpdated` DOM Callback
 
-The exported `onBeforeElUpdated` function handles two things that hooks cannot do cleanly:
+The exported `onBeforeElUpdated` function handles three things that hooks cannot do cleanly:
 
 ### Icons
 
 UIkit injects SVGs into icon elements. Morphdom would strip them on every patch because the server HTML has no children. The callback copies the SVG from the current DOM into the incoming DOM before the patch, so it's never lost. When the `uk-icon` attribute changes (new icon name), it lets morphdom clear the old SVG and schedules a UIkit re-render after the patch.
 
 No `id` or `phx-update="ignore"` needed — icons can be changed dynamically from server assigns.
+
+### Runtime Classes
+
+UIkit's JS adds `uk-*` classes at runtime (e.g. `uk-alert` class for `uk-alert` attribute, `uk-icon` class on `uk-close` elements). Morphdom strips these on every patch. The callback preserves all `uk-*` classes from the current DOM into the incoming DOM.
 
 ### Dropdowns
 

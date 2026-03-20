@@ -1076,4 +1076,51 @@ defmodule Uikit.Components do
     </ul>
     """
   end
+
+  @doc """
+  Renders a UIkit alert.
+
+  Alerts display feedback messages. They can be dismissed with a close button
+  and support style variants for different message types.
+
+  ## Examples
+
+      <.uk_alert>Default alert message.</.uk_alert>
+      <.uk_alert variant="success" closable>Operation completed.</.uk_alert>
+      <.uk_alert variant="danger" closable>
+        <h3>Error</h3>
+        <p>Something went wrong.</p>
+      </.uk_alert>
+  """
+  attr :variant, :string,
+    default: nil,
+    values: [nil, "primary", "success", "warning", "danger"],
+    doc: "the style variant of the alert"
+
+  attr :closable, :boolean, default: false, doc: "whether to show a close button"
+  attr :animation, :boolean, default: nil, doc: "whether to animate on close (default: true)"
+  attr :duration, :integer, default: nil, doc: "close animation duration in ms (default: 150)"
+  attr :class, :any, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "the arbitrary HTML attributes to add to the alert container"
+  slot :inner_block, required: true, doc: "the alert content"
+
+  def uk_alert(assigns) do
+    alert_opts = uikit_opts(assigns, [{:animation, :unless},:duration])
+
+    assigns = assign(assigns, :alert_opts, alert_opts)
+
+    ~H"""
+    <div
+      uk-alert={if @alert_opts == "", do: true, else: @alert_opts}
+      class={[
+        @variant && "uk-alert-#{@variant}",
+        @class
+      ]}
+      {@rest}
+    >
+      <a :if={@closable} href="" class="uk-alert-close" uk-close></a>
+      {render_slot(@inner_block)}
+    </div>
+    """
+  end
 end

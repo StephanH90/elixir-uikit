@@ -10,7 +10,8 @@ defmodule DevWeb.HomeLive do
        show_programmatic_modal: false,
        loading: false,
        switcher_index: 0,
-       counter: 0
+       counter: 0,
+       server_alert: nil
      )}
   end
 
@@ -39,6 +40,7 @@ defmodule DevWeb.HomeLive do
               <li><a href="#subnav">Subnav</a></li>
               <li><a href="#switcher">Switcher</a></li>
               <li><a href="#dropdown">Dropdown</a></li>
+              <li><a href="#alert">Alert</a></li>
               <li><a href="#comment">Comment</a></li>
               <li class="uk-nav-divider"></li>
               <li class="uk-nav-header">Other Pages</li>
@@ -450,6 +452,36 @@ defmodule DevWeb.HomeLive do
               </.uk_card>
             </section>
 
+            <section id="alert" class="uk-margin-large-bottom">
+              <h2 class="uk-h2 uk-margin-small-bottom">Alert</h2>
+              <.uk_card>
+                <:body>
+                  <.uk_alert>This is a default alert.</.uk_alert>
+                  <.uk_alert variant="primary" closable>
+                    <p>Primary alert with close button.</p>
+                  </.uk_alert>
+                  <.uk_alert variant="success" closable>
+                    <p>Success! Your changes have been saved.</p>
+                  </.uk_alert>
+                  <.uk_alert variant="warning" closable>
+                    <p>Warning — please review before continuing.</p>
+                  </.uk_alert>
+                  <.uk_alert variant="danger" closable>
+                    <h3>Error</h3>
+                    <p>Something went wrong. Please try again.</p>
+                  </.uk_alert>
+
+                  <h3 class="uk-h4 uk-margin-top">Server-triggered Alert</h3>
+                  <.uk_button variant="primary" phx-click="show_server_alert">
+                    Trigger Alert from Server
+                  </.uk_button>
+                  <.uk_alert :if={@server_alert} variant={@server_alert} closable phx-click="dismiss_server_alert">
+                    <p>This alert was triggered from the server! Counter: {@counter}</p>
+                  </.uk_alert>
+                </:body>
+              </.uk_card>
+            </section>
+
             <section id="comment" class="uk-margin-large-bottom">
               <h2 class="uk-h2 uk-margin-small-bottom">Comment</h2>
               <.uk_card>
@@ -493,7 +525,7 @@ defmodule DevWeb.HomeLive do
                   <h3 class="uk-h4 uk-margin-top">Threaded Comment List</h3>
                   <.uk_comment_list>
                     <li>
-                      <.uk_comment id="demo-thread-1">
+                      <.uk_comment id="demo-thread-1" primary="aoo">
                         <:avatar
                           src="https://getuikit.com/docs/images/avatar.jpg"
                           width="80"
@@ -743,6 +775,14 @@ defmodule DevWeb.HomeLive do
 
   def handle_event("uikit:modal_closed", _params, socket) do
     {:noreply, assign(socket, show_programmatic_modal: false)}
+  end
+
+  def handle_event("show_server_alert", _params, socket) do
+    {:noreply, assign(socket, server_alert: "success")}
+  end
+
+  def handle_event("dismiss_server_alert", _params, socket) do
+    {:noreply, assign(socket, server_alert: nil)}
   end
 
   def handle_info(:tick, socket) do

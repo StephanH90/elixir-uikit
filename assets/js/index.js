@@ -68,15 +68,27 @@ const Modal = {
 //     hooks: UikitHooks,
 //     dom: { onBeforeElUpdated }
 //   })
+// UIkit attributes that cause SVG injection into the element
+const UIKIT_SVG_ATTRS = ["uk-icon", "uk-close", "uk-spinner", "uk-totop", "uk-marker"];
+
 export function onBeforeElUpdated(from, to) {
-  // Preserve UIkit icon SVGs across patches
-  if (from.hasAttribute("uk-icon")) {
-    if (from.getAttribute("uk-icon") === to.getAttribute("uk-icon")) {
-      // Same icon — keep the SVG that UIkit injected
-      to.innerHTML = from.innerHTML;
-    } else {
-      // Icon name changed — let morphdom clear it, re-render after patch
-      requestAnimationFrame(() => UIkit.icon(to));
+  // Preserve UIkit-injected SVGs across patches
+  for (const attr of UIKIT_SVG_ATTRS) {
+    if (from.hasAttribute(attr)) {
+      if (from.getAttribute(attr) === to.getAttribute(attr)) {
+        to.innerHTML = from.innerHTML;
+      } else {
+        // Attribute changed — re-render after patch
+        requestAnimationFrame(() => UIkit.update(to));
+      }
+      break;
+    }
+  }
+
+  // Preserve all UIkit runtime classes (e.g. uk-alert, uk-icon added by uk-close)
+  for (const cls of from.classList) {
+    if (cls.startsWith("uk-") && !to.classList.contains(cls)) {
+      to.classList.add(cls);
     }
   }
 
