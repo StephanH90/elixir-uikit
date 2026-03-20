@@ -1,6 +1,17 @@
 # LiveView Hooks
 
-`elixir_uikit` exports five LiveView hooks: **Sortable**, **Modal**, **Icon**, **Dropdown**, and **Switcher**. These are automatically registered when you run `mix uikit.setup`.
+`elixir_uikit` exports three LiveView hooks (**Sortable**, **Modal**, **Switcher**) and a `dom` callback (`onBeforeElUpdated`). These are automatically registered when you run `mix uikit.setup`.
+
+```javascript
+import UikitHooks, { onBeforeElUpdated } from "elixir_uikit"
+
+let liveSocket = new LiveSocket("/live", Socket, {
+  hooks: UikitHooks,
+  dom: { onBeforeElUpdated }
+})
+```
+
+The `onBeforeElUpdated` callback preserves UIkit's runtime DOM state (icon SVGs, dropdown open state/positioning) across LiveView patches. Without it, morphdom strips UIkit's injected content on every server update.
 
 ## Sortable Hook
 
@@ -83,32 +94,21 @@ If you don't need server control, skip `show` and use `uk_toggle` on a button:
 
 ---
 
-## Icon Hook
+## `onBeforeElUpdated` DOM Callback
 
-Allows UIkit icons to update dynamically when server assigns change. UIkit replaces icon elements with inline SVG — without the hook, `phx-update="ignore"` was needed, which prevented any server-driven icon changes.
+The exported `onBeforeElUpdated` function handles two things that hooks cannot do cleanly:
 
-### How it works
+### Icons
 
-The hook is automatically attached by the `uk_icon` component. On `mounted()` and `updated()`, it calls `UIkit.icon()` to (re-)render the SVG from the current `uk-icon` attribute.
+UIkit injects SVGs into icon elements. Morphdom would strip them on every patch because the server HTML has no children. The callback copies the SVG from the current DOM into the incoming DOM before the patch, so it's never lost. When the `uk-icon` attribute changes (new icon name), it lets morphdom clear the old SVG and schedules a UIkit re-render after the patch.
 
-### Requirements
+No `id` or `phx-update="ignore"` needed — icons can be changed dynamically from server assigns.
 
-- The `uk_icon` component requires a stable `id` (needed for the hook).
+### Dropdowns
 
----
+UIkit adds `uk-open` class and inline positioning styles when a dropdown is shown. The callback copies these from the current DOM into the incoming DOM, so open dropdowns stay open through patches. No per-element hook needed — UIkit auto-initializes elements with the `uk-dropdown` attribute.
 
-## Dropdown Hook
-
-Preserves dropdown open state across LiveView DOM patches. Without this hook, LiveView's morphdom strips UIkit's `uk-open` class on every server update, causing open dropdowns to close unexpectedly.
-
-### How it works
-
-The hook is automatically attached by the `uk_dropdown` component — no manual setup needed. Before each LiveView patch, it records whether the dropdown is open. After the patch, it restores the open state if it was active.
-
-### Requirements
-
-- The `uk_dropdown` component requires a stable `id` (needed for the hook).
-- The `uk-drop uk-dropdown` classes are pre-declared in the server HTML to prevent morphdom from stripping UIkit's positioning styles.
+The `uk_dropdown` component still requires a stable `id` because UIkit manipulates the dropdown's DOM structure.
 
 ---
 

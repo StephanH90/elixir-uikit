@@ -244,36 +244,49 @@ if Code.ensure_loaded?(Igniter) do
         "UIkit.use(Icons)",
         "window.UIkit = UIkit",
         "",
-        "import UikitHooks from \"../../deps/elixir_uikit/priv/static/js/elixir_uikit.js\""
+        "import UikitHooks, { onBeforeElUpdated } from \"../../deps/elixir_uikit/priv/static/js/elixir_uikit.js\""
       ]
 
       {before, after_lines} = Enum.split(lines, last_import_idx + 1)
       new_content = Enum.join(before ++ uikit_lines ++ after_lines, "\n")
 
-      cond do
-        Regex.match?(~r/hooks:\s*\{\.\.\./, new_content) ->
-          Regex.replace(
-            ~r/hooks:\s*(\{[^}]*\})/,
-            new_content,
-            fn _, inner -> "hooks: {#{String.slice(inner, 1..-2//1)}, ...UikitHooks}" end
-          )
+      new_content =
+        cond do
+          Regex.match?(~r/hooks:\s*\{\.\.\./, new_content) ->
+            Regex.replace(
+              ~r/hooks:\s*(\{[^}]*\})/,
+              new_content,
+              fn _, inner -> "hooks: {#{String.slice(inner, 1..-2//1)}, ...UikitHooks}" end
+            )
 
-        Regex.match?(~r/hooks:\s*[a-zA-Z]/, new_content) ->
-          Regex.replace(
-            ~r/hooks:\s*([a-zA-Z]\w*)/,
-            new_content,
-            "hooks: {...\\1, ...UikitHooks}"
-          )
+          Regex.match?(~r/hooks:\s*[a-zA-Z]/, new_content) ->
+            Regex.replace(
+              ~r/hooks:\s*([a-zA-Z]\w*)/,
+              new_content,
+              "hooks: {...\\1, ...UikitHooks}"
+            )
 
-        Regex.match?(~r/new\s+LiveSocket\s*\(/, new_content) ->
-          Regex.replace(
-            ~r/(new\s+LiveSocket\s*\(\s*"[^"]+"\s*,\s*Socket\s*,\s*\{)/,
-            new_content,
-            "\\1\n  hooks: UikitHooks,"
-          )
+          Regex.match?(~r/new\s+LiveSocket\s*\(/, new_content) ->
+            Regex.replace(
+              ~r/(new\s+LiveSocket\s*\(\s*"[^"]+"\s*,\s*Socket\s*,\s*\{)/,
+              new_content,
+              "\\1\n  hooks: UikitHooks,"
+            )
 
-        true ->
-          new_content
+          true ->
+            new_content
+        end
+
+      # Inject the dom callback for UIkit LiveView compatibility
+      if Regex.match?(~r/dom:\s*\{/, new_content) do
+        # dom option already exists — user must integrate manually
+        new_content
+      else
+        Regex.replace(
+          ~r/(new\s+LiveSocket\s*\(\s*"[^"]+"\s*,\s*Socket\s*,\s*\{)/,
+          new_content,
+          "\\1\n  dom: { onBeforeElUpdated },"
+        )
       end
     end
 

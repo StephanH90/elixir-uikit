@@ -57,40 +57,36 @@ const Modal = {
   }
 };
 
-const Icon = {
-  mounted() {
-    UIkit.icon(this.el);
-  },
-  updated() {
-    // Re-render SVG when the uk-icon attribute changes (e.g. new icon name)
-    UIkit.icon(this.el);
+// DOM callback for LiveView's liveSocket `dom` option.
+// Runs before morphdom patches each element, letting us copy UIkit's
+// runtime state from the current DOM (from) into the incoming DOM (to)
+// so morphdom never strips it.
+//
+// Usage in app.js:
+//   import UikitHooks, { onBeforeElUpdated } from "elixir_uikit"
+//   let liveSocket = new LiveSocket("/live", Socket, {
+//     hooks: UikitHooks,
+//     dom: { onBeforeElUpdated }
+//   })
+export function onBeforeElUpdated(from, to) {
+  // Preserve UIkit icon SVGs across patches
+  if (from.hasAttribute("uk-icon")) {
+    if (from.getAttribute("uk-icon") === to.getAttribute("uk-icon")) {
+      // Same icon — keep the SVG that UIkit injected
+      to.innerHTML = from.innerHTML;
+    } else {
+      // Icon name changed — let morphdom clear it, re-render after patch
+      requestAnimationFrame(() => UIkit.icon(to));
+    }
   }
-};
 
-const Dropdown = {
-  mounted() {
-    this.dropdown = UIkit.dropdown(this.el);
-  },
-  beforeUpdate() {
-    this._wasOpen = this.el.classList.contains("uk-open");
-    if (this._wasOpen) {
-      this._savedStyle = this.el.getAttribute("style");
-    }
-  },
-  updated() {
-    if (this._wasOpen) {
-      this.el.classList.add("uk-open");
-      if (this._savedStyle) {
-        this.el.setAttribute("style", this._savedStyle);
-      }
-    }
-  },
-  destroyed() {
-    if (this.dropdown) {
-      this.dropdown.$destroy();
-    }
+  // Preserve dropdown open state and positioning across patches
+  if (from.classList.contains("uk-open") && from.hasAttribute("uk-dropdown")) {
+    to.classList.add("uk-open");
+    const style = from.getAttribute("style");
+    if (style) to.setAttribute("style", style);
   }
-};
+}
 
 const Switcher = {
   mounted() {
@@ -141,7 +137,5 @@ const Switcher = {
 export default {
   Sortable,
   Modal,
-  Icon,
-  Dropdown,
   Switcher
 };

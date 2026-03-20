@@ -400,14 +400,14 @@ defmodule Uikit.Components do
 
   ## Examples
 
-      <.uk_icon id="icon-check" name="check" />
-      <.uk_icon id="icon-heart" name="heart" ratio={2} />
-      <.uk_icon id="icon-trash" name="trash" button href="/delete" />
-      <.uk_icon id="icon-twitter" name="twitter" href="https://twitter.com" />
+      <.uk_icon name="check" />
+      <.uk_icon name="heart" ratio={2} />
+      <.uk_icon name="trash" button href="/delete" />
+      <.uk_icon name="twitter" href="https://twitter.com" />
   """
   attr :name, :string, required: true, doc: "the name of the icon"
   attr :ratio, :any, default: 1, doc: "the size multiplier of the icon (integer or float)"
-  attr :id, :string, required: true, doc: "stable DOM id (required for LiveView hook)"
+  attr :id, :string, default: nil, doc: "optional DOM ID"
   attr :button, :boolean, default: false, doc: "whether to render as an icon button"
   attr :class, :any, doc: "additional CSS classes"
 
@@ -425,11 +425,11 @@ defmodule Uikit.Components do
 
     if assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch] do
       ~H"""
-      <.link id={@id} phx-hook="Icon" class={@class} {@rest}></.link>
+      <.link id={@id} class={@class} {@rest}></.link>
       """
     else
       ~H"""
-      <span id={@id} phx-hook="Icon" class={@class} {@rest}></span>
+      <span id={@id} class={@class} {@rest}></span>
       """
     end
   end
@@ -1017,7 +1017,6 @@ defmodule Uikit.Components do
     ~H"""
     <div
       id={@id}
-      phx-hook="Dropdown"
       uk-dropdown={if @dropdown_opts == "", do: true, else: @dropdown_opts}
       class={[
         "uk-drop uk-dropdown",

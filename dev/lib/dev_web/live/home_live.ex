@@ -201,11 +201,11 @@ defmodule DevWeb.HomeLive do
               <.uk_card>
                 <:body>
                   <div class="uk-flex uk-flex-middle gap-4">
-                    <.uk_icon id="icon-check" name="check" ratio={1.5} />
-                    <.uk_icon id="icon-heart" name="heart" class="uk-text-danger" ratio={1.5} />
-                    <.uk_icon id="icon-trash" name="trash" button href="#" />
-                    <.uk_icon id="icon-twitter" name="twitter" href="#" />
-                    <.uk_icon id="icon-home" name="home" ratio={2} />
+                    <.uk_icon name="check" ratio={1.5} />
+                    <.uk_icon name="heart" class="uk-text-danger" ratio={1.5} />
+                    <.uk_icon name="trash" button href="#" />
+                    <.uk_icon name="twitter" href="#" />
+                    <.uk_icon name="home" ratio={2} />
                   </div>
                 </:body>
               </.uk_card>
@@ -591,7 +591,7 @@ defmodule DevWeb.HomeLive do
                       <div :for={item <- @items}>
                         <.uk_card size="small" class="uk-text-center">
                           <:body>
-                            <.uk_icon id={"icon-item-#{item.id}"} name={item.icon} class="uk-margin-small-right" />
+                            <.uk_icon name={item.icon} class="uk-margin-small-right" />
                             {item.label}
                           </:body>
                         </.uk_card>
