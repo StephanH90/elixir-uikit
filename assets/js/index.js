@@ -85,13 +85,6 @@ export function onBeforeElUpdated(from, to) {
     }
   }
 
-  // Preserve all UIkit runtime classes (e.g. uk-alert, uk-icon added by uk-close)
-  for (const cls of from.classList) {
-    if (cls.startsWith("uk-") && !to.classList.contains(cls)) {
-      to.classList.add(cls);
-    }
-  }
-
   // Preserve dropdown open state and positioning across patches
   if (from.classList.contains("uk-open") && from.hasAttribute("uk-dropdown")) {
     to.classList.add("uk-open");

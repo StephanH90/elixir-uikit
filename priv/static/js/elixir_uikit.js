@@ -1,4 +1,4 @@
-const UIkit = window.UIkit;
+import UIkit from "uikit";
 
 const Sortable = {
   mounted() {
@@ -56,6 +56,42 @@ const Modal = {
     }
   }
 };
+
+// DOM callback for LiveView's liveSocket `dom` option.
+// Runs before morphdom patches each element, letting us copy UIkit's
+// runtime state from the current DOM (from) into the incoming DOM (to)
+// so morphdom never strips it.
+//
+// Usage in app.js:
+//   import UikitHooks, { onBeforeElUpdated } from "elixir_uikit"
+//   let liveSocket = new LiveSocket("/live", Socket, {
+//     hooks: UikitHooks,
+//     dom: { onBeforeElUpdated }
+//   })
+// UIkit attributes that cause SVG injection into the element
+const UIKIT_SVG_ATTRS = ["uk-icon", "uk-close", "uk-spinner", "uk-totop", "uk-marker"];
+
+export function onBeforeElUpdated(from, to) {
+  // Preserve UIkit-injected SVGs across patches
+  for (const attr of UIKIT_SVG_ATTRS) {
+    if (from.hasAttribute(attr)) {
+      if (from.getAttribute(attr) === to.getAttribute(attr)) {
+        to.innerHTML = from.innerHTML;
+      } else {
+        // Attribute changed — re-render after patch
+        requestAnimationFrame(() => UIkit.update(to));
+      }
+      break;
+    }
+  }
+
+  // Preserve dropdown open state and positioning across patches
+  if (from.classList.contains("uk-open") && from.hasAttribute("uk-dropdown")) {
+    to.classList.add("uk-open");
+    const style = from.getAttribute("style");
+    if (style) to.setAttribute("style", style);
+  }
+}
 
 const Switcher = {
   mounted() {
