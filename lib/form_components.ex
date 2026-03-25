@@ -23,7 +23,7 @@ defmodule Uikit.FormComponents do
         </.uk_fieldset>
       </.uk_form>
   """
-  use Phoenix.Component
+  use Phoenix.Component, global_prefixes: ~w(uk-)
 
   @doc """
   Renders a UIkit-styled form wrapper.
