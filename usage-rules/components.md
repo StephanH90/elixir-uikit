@@ -323,46 +323,71 @@ Wraps Phoenix `<.form>` with UIkit layout classes.
 
 Universal input component. Renders `<input>`, `<select>`, or `<textarea>` based on `type`. Automatically extracts errors from the form field.
 
+Labels are passed via the `<:label>` slot, which accepts arbitrary HEEx (required markers, icons, links, etc.). Omit the slot to render the input without a label.
+
 ```heex
-<.uk_input field={@form[:name]} label="Full Name" />
-<.uk_input field={@form[:email]} type="email" label="Email" size="large" />
-<.uk_input field={@form[:bio]} type="textarea" label="Bio" rows="4" />
-<.uk_input field={@form[:role]} type="select" label="Role"
-           options={["Admin": "admin", "User": "user"]} prompt="Select..." />
+<.uk_input field={@form[:name]}>
+  <:label>Full Name</:label>
+</.uk_input>
+
+<.uk_input field={@form[:email]} type="email" size="large">
+  <:label>Email <span class="uk-text-danger">*</span></:label>
+</.uk_input>
+
+<.uk_input field={@form[:bio]} type="textarea" rows="4">
+  <:label>Bio</:label>
+</.uk_input>
+
+<.uk_input field={@form[:role]} type="select"
+           options={["Admin": "admin", "User": "user"]} prompt="Select...">
+  <:label>Role</:label>
+</.uk_input>
 ```
 
-**Attrs:** `field`, `type` (default `"text"`), `label`, `id`, `name`, `value`, `errors`, `size` (`small|large`), `width` (`xsmall|small|medium|large`), `state` (`danger|success`), `blank`, `class`. For select: `options`, `prompt`, `multiple`. Global attrs include `placeholder`, `required`, `disabled`, `readonly`, `min`, `max`, `step`, `rows`, `cols`, `pattern`, `maxlength`, `minlength`.
+**Attrs:** `field`, `type` (default `"text"`), `id`, `name`, `value`, `errors`, `size` (`small|large`), `width` (`xsmall|small|medium|large`), `state` (`danger|success`), `blank`, `class`. For select: `options`, `prompt`, `multiple`. Global attrs include `placeholder`, `required`, `disabled`, `readonly`, `min`, `max`, `step`, `rows`, `cols`, `pattern`, `maxlength`, `minlength`.
+**Slots:** `label` (HEEx-capable label content).
 
 ### `uk_checkbox`
 
-Checkbox with hidden false-value field for LiveView forms.
+Checkbox with hidden false-value field for LiveView forms. Label goes in the `<:label>` slot.
 
 ```heex
-<.uk_checkbox field={@form[:agree]} label="I agree to the terms" />
+<.uk_checkbox field={@form[:agree]}>
+  <:label>I agree to the <a href="/terms">terms</a></:label>
+</.uk_checkbox>
 ```
 
-**Attrs:** `field`, `label`, `id`, `name`, `value` (default `"true"`), `checked`, `errors`, `state`, `class`. Global: `disabled`, `required`.
+**Attrs:** `field`, `id`, `name`, `value` (default `"true"`), `checked`, `errors`, `state`, `class`. Global: `disabled`, `required`.
+**Slots:** `label`.
 
 ### `uk_radio`
 
-Radio input. Use multiple with the same field/name for a group.
+Radio input. Use multiple with the same field/name for a group. Label goes in the `<:label>` slot.
 
 ```heex
-<.uk_radio field={@form[:role]} value="admin" label="Admin" />
-<.uk_radio field={@form[:role]} value="user" label="User" />
+<.uk_radio field={@form[:role]} value="admin">
+  <:label>Admin</:label>
+</.uk_radio>
+<.uk_radio field={@form[:role]} value="user">
+  <:label>User</:label>
+</.uk_radio>
 ```
 
-**Attrs:** `field`, `label`, `id`, `name`, `value` (required), `checked`, `state`, `class`. Global: `disabled`, `required`.
+**Attrs:** `field`, `id`, `name`, `value` (required), `checked`, `state`, `class`. Global: `disabled`, `required`.
+**Slots:** `label`.
 
 ### `uk_range`
 
-Range slider input.
+Range slider input. Label goes in the `<:label>` slot.
 
 ```heex
-<.uk_range field={@form[:volume]} min="0" max="100" step="1" label="Volume" />
+<.uk_range field={@form[:volume]} min="0" max="100" step="1">
+  <:label>Volume</:label>
+</.uk_range>
 ```
 
-**Attrs:** `field`, `label`, `id`, `name`, `value`, `errors`, `class`. Global: `min`, `max`, `step`, `disabled`, `required`.
+**Attrs:** `field`, `id`, `name`, `value`, `errors`, `class`. Global: `min`, `max`, `step`, `disabled`, `required`.
+**Slots:** `label`.
 
 ### `uk_fieldset`
 

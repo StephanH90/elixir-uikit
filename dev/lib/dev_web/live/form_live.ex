@@ -139,45 +139,49 @@ defmodule DevWeb.FormLive do
                   <:legend>Account Details</:legend>
 
                   <div class="uk-margin">
-                    <.uk_input field={@form[:name]} label="Full Name" placeholder="Jane Smith" />
+                    <.uk_input field={@form[:name]} placeholder="Jane Smith">
+                      <:label>Full Name <span class="uk-text-danger">*</span></:label>
+                    </.uk_input>
                   </div>
 
                   <div class="uk-margin">
-                    <.uk_input
-                      field={@form[:email]}
-                      type="email"
-                      label="Email"
-                      placeholder="jane@example.com"
-                    />
+                    <.uk_input field={@form[:email]} type="email" placeholder="jane@example.com">
+                      <:label>Email <span class="uk-text-danger">*</span></:label>
+                    </.uk_input>
                   </div>
 
                   <div class="uk-margin">
                     <.uk_input
                       field={@form[:password]}
                       type="password"
-                      label="Password"
                       placeholder="Min. 8 characters"
-                    />
+                    >
+                      <:label>
+                        Password <span class="uk-text-muted uk-text-small">(min. 8 chars)</span>
+                      </:label>
+                    </.uk_input>
                   </div>
 
                   <div class="uk-margin">
                     <.uk_input
                       field={@form[:role]}
                       type="select"
-                      label="Role"
                       prompt="Pick a role..."
                       options={@roles}
-                    />
+                    >
+                      <:label>Role</:label>
+                    </.uk_input>
                   </div>
 
                   <div class="uk-margin">
                     <.uk_input
                       field={@form[:bio]}
                       type="textarea"
-                      label="Bio"
                       placeholder="Tell us about yourself..."
                       rows="4"
-                    />
+                    >
+                      <:label>Bio</:label>
+                    </.uk_input>
                   </div>
                 </.uk_fieldset>
 
@@ -191,24 +195,28 @@ defmodule DevWeb.FormLive do
                         :for={{label, value} <- @plans}
                         field={@form[:plan]}
                         value={value}
-                        label={label}
-                      />
+                      >
+                        <:label>{label}</:label>
+                      </.uk_radio>
                     </div>
                   </div>
 
                   <div class="uk-margin">
-                    <.uk_checkbox field={@form[:newsletter]} label="Subscribe to newsletter" />
+                    <.uk_checkbox field={@form[:newsletter]}>
+                      <:label>Subscribe to <strong>weekly</strong> newsletter</:label>
+                    </.uk_checkbox>
                   </div>
 
                   <div class="uk-margin">
                     <.uk_input
                       field={@form[:volume]}
                       type="range"
-                      label="Notification volume"
                       min="0"
                       max="100"
                       step="1"
-                    />
+                    >
+                      <:label>Notification volume</:label>
+                    </.uk_input>
                   </div>
                 </.uk_fieldset>
 

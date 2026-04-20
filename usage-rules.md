@@ -35,10 +35,10 @@ Run `mix uikit.setup` to configure your project automatically (imports, hooks, C
 | Component | Key Attrs | Slots |
 |---|---|---|
 | `uk_form` | `for` (required), `id` (required), `layout` (`stacked\|horizontal`) | `inner_block` |
-| `uk_input` | `field`, `type` (text/email/select/textarea/etc.), `label`, `size`, `width`, `state`, `blank`, `options`, `prompt`, `multiple` | — |
-| `uk_checkbox` | `field`, `label`, `value`, `checked`, `state` | — |
-| `uk_radio` | `field`, `label`, `value` (required), `checked`, `state` | — |
-| `uk_range` | `field`, `label`, `value` | — |
+| `uk_input` | `field`, `type` (text/email/select/textarea/etc.), `size`, `width`, `state`, `blank`, `options`, `prompt`, `multiple` | `label` |
+| `uk_checkbox` | `field`, `value`, `checked`, `state` | `label` |
+| `uk_radio` | `field`, `value` (required), `checked`, `state` | `label` |
+| `uk_range` | `field`, `value` | `label` |
 | `uk_fieldset` | `class` | `legend`, `inner_block` |
 | `uk_form_label` | `for`, `class` | `inner_block` |
 | `uk_form_controls` | `text` | `inner_block` |

@@ -4,7 +4,7 @@ defmodule Uikit.MixProject do
   def project do
     [
       app: :elixir_uikit,
-      version: "0.6.0",
+      version: "0.7.0",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       description: "UIkit components and LiveView hooks for Phoenix.",
@@ -12,7 +12,8 @@ defmodule Uikit.MixProject do
       deps: deps(),
       docs: [
         main: "readme",
-        extras: ["README.md"]
+        extras: ["README.md", "CHANGELOG.md"],
+        skip_undefined_reference_warnings_on: ["CHANGELOG.md"]
       ],
       usage_rules: usage_rules()
     ]
@@ -28,7 +29,9 @@ defmodule Uikit.MixProject do
   defp package do
     [
       licenses: ["MIT"],
-      links: %{},
+      links: %{
+        "Changelog" => "https://hexdocs.pm/elixir_uikit/changelog.html"
+      },
       files: files()
     ]
   end
@@ -38,6 +41,7 @@ defmodule Uikit.MixProject do
       "lib",
       "priv",
       "AGENTS.md",
+      "CHANGELOG.md",
       "mix.exs",
       "README.md",
       "assets",

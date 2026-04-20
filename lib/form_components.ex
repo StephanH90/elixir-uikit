@@ -16,10 +16,18 @@ defmodule Uikit.FormComponents do
       <.uk_form for={@form} id="user-form" phx-change="validate" phx-submit="save">
         <.uk_fieldset>
           <:legend>User Details</:legend>
-          <.uk_input field={@form[:name]} label="Full Name" />
-          <.uk_input field={@form[:email]} type="email" label="Email" />
-          <.uk_input field={@form[:role]} type="select" label="Role" options={["Admin", "User"]} />
-          <.uk_input field={@form[:bio]} type="textarea" label="Bio" />
+          <.uk_input field={@form[:name]}>
+            <:label>Full Name</:label>
+          </.uk_input>
+          <.uk_input field={@form[:email]} type="email">
+            <:label>Email <span class="uk-text-danger">*</span></:label>
+          </.uk_input>
+          <.uk_input field={@form[:role]} type="select" options={["Admin", "User"]}>
+            <:label>Role</:label>
+          </.uk_input>
+          <.uk_input field={@form[:bio]} type="textarea">
+            <:label>Bio</:label>
+          </.uk_input>
         </.uk_fieldset>
       </.uk_form>
   """
@@ -88,16 +96,27 @@ defmodule Uikit.FormComponents do
 
   ## Examples
 
-      <.uk_input field={@form[:email]} type="email" label="Email" />
-      <.uk_input field={@form[:username]} label="Username" size="large" />
-      <.uk_input field={@form[:bio]} type="textarea" label="Bio" rows="4" />
-      <.uk_input field={@form[:role]} type="select" label="Role"
-                 options={["Admin": "admin", "User": "user"]} />
+      <.uk_input field={@form[:email]} type="email">
+        <:label>Email</:label>
+      </.uk_input>
+
+      <.uk_input field={@form[:username]} size="large">
+        <:label>Username <span class="uk-text-danger">*</span></:label>
+      </.uk_input>
+
+      <.uk_input field={@form[:bio]} type="textarea" rows="4">
+        <:label>Bio</:label>
+      </.uk_input>
+
+      <.uk_input field={@form[:role]} type="select"
+                 options={["Admin": "admin", "User": "user"]}>
+        <:label>Role</:label>
+      </.uk_input>
+
       <.uk_input name="search" type="search" placeholder="Search..." />
   """
   attr :id, :any, default: nil, doc: "the DOM ID of the input"
   attr :name, :any, doc: "the name of the input"
-  attr :label, :string, default: nil, doc: "the label text"
   attr :value, :any, doc: "the input value"
 
   attr :type, :string,
@@ -140,6 +159,8 @@ defmodule Uikit.FormComponents do
          multiple pattern placeholder readonly required rows step),
     doc: "arbitrary HTML attributes passed to the input element"
 
+  slot :label, doc: "the label content; supports HTML for custom styling"
+
   def uk_input(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
 
@@ -162,7 +183,7 @@ defmodule Uikit.FormComponents do
 
     ~H"""
     <div>
-      <label :if={@label} class="uk-form-label" for={@id}>{@label}</label>
+      <label :if={@label != []} class="uk-form-label" for={@id}>{render_slot(@label)}</label>
       <div class="uk-form-controls">
         <select
           id={@id}
@@ -192,7 +213,7 @@ defmodule Uikit.FormComponents do
 
     ~H"""
     <div>
-      <label :if={@label} class="uk-form-label" for={@id}>{@label}</label>
+      <label :if={@label != []} class="uk-form-label" for={@id}>{render_slot(@label)}</label>
       <div class="uk-form-controls">
         <textarea
           id={@id}
@@ -219,7 +240,7 @@ defmodule Uikit.FormComponents do
 
     ~H"""
     <div>
-      <label :if={@label} class="uk-form-label" for={@id}>{@label}</label>
+      <label :if={@label != []} class="uk-form-label" for={@id}>{render_slot(@label)}</label>
       <div class="uk-form-controls">
         <input
           type={@type}
@@ -249,12 +270,16 @@ defmodule Uikit.FormComponents do
 
   ## Examples
 
-      <.uk_checkbox field={@form[:agree]} label="I agree to the terms" />
-      <.uk_checkbox name="notifications" label="Enable notifications" checked />
+      <.uk_checkbox field={@form[:agree]}>
+        <:label>I agree to the terms</:label>
+      </.uk_checkbox>
+
+      <.uk_checkbox name="notifications" checked>
+        <:label>Enable <strong>important</strong> notifications</:label>
+      </.uk_checkbox>
   """
   attr :id, :any, default: nil, doc: "the DOM ID of the checkbox"
   attr :name, :any, doc: "the name of the checkbox"
-  attr :label, :string, default: nil, doc: "the label text shown beside the checkbox"
   attr :value, :any, default: "true", doc: "the value submitted when checked"
   attr :checked, :boolean, doc: "whether the checkbox is checked"
 
@@ -273,6 +298,8 @@ defmodule Uikit.FormComponents do
   attr :rest, :global,
     include: ~w(disabled form required),
     doc: "arbitrary HTML attributes passed to the checkbox input"
+
+  slot :label, doc: "the label content shown beside the checkbox; supports HTML"
 
   def uk_checkbox(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
@@ -318,7 +345,7 @@ defmodule Uikit.FormComponents do
           ]}
           {@rest}
         />
-        <label :if={@label} for={@id}>{@label}</label>
+        <label :if={@label != []} for={@id}>{render_slot(@label)}</label>
       </div>
       <.uk_field_errors errors={@errors} />
     </div>
@@ -332,15 +359,19 @@ defmodule Uikit.FormComponents do
 
   ## Examples
 
-      <.uk_radio field={@form[:role]} value="admin" label="Admin" />
-      <.uk_radio field={@form[:role]} value="user" label="User" />
+      <.uk_radio field={@form[:role]} value="admin">
+        <:label>Admin</:label>
+      </.uk_radio>
+      <.uk_radio field={@form[:role]} value="user">
+        <:label>User</:label>
+      </.uk_radio>
 
-      <.uk_radio name="color" value="red" label="Red" />
-      <.uk_radio name="color" value="blue" label="Blue" />
+      <.uk_radio name="color" value="red">
+        <:label><span class="uk-text-danger">Red</span></:label>
+      </.uk_radio>
   """
   attr :id, :any, default: nil, doc: "the DOM ID of the radio input"
   attr :name, :any, doc: "the name of the radio group"
-  attr :label, :string, default: nil, doc: "the label text shown beside the radio"
   attr :value, :any, required: true, doc: "the value submitted when this radio is selected"
   attr :checked, :boolean, default: false, doc: "whether this radio is selected"
 
@@ -356,6 +387,8 @@ defmodule Uikit.FormComponents do
   attr :rest, :global,
     include: ~w(disabled form required),
     doc: "arbitrary HTML attributes passed to the radio input"
+
+  slot :label, doc: "the label content shown beside the radio; supports HTML"
 
   def uk_radio(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     assigns
@@ -381,7 +414,7 @@ defmodule Uikit.FormComponents do
         ]}
         {@rest}
       />
-      <label :if={@label} for={@id}>{@label}</label>
+      <label :if={@label != []} for={@id}>{render_slot(@label)}</label>
     </div>
     """
   end
@@ -391,12 +424,14 @@ defmodule Uikit.FormComponents do
 
   ## Examples
 
-      <.uk_range field={@form[:volume]} min="0" max="100" step="1" label="Volume" />
+      <.uk_range field={@form[:volume]} min="0" max="100" step="1">
+        <:label>Volume</:label>
+      </.uk_range>
+
       <.uk_range name="opacity" min="0" max="1" step="0.1" />
   """
   attr :id, :any, default: nil, doc: "the DOM ID of the range input"
   attr :name, :any, doc: "the name of the range input"
-  attr :label, :string, default: nil, doc: "the label text"
   attr :value, :any, doc: "the current value"
 
   attr :field, Phoenix.HTML.FormField,
@@ -408,6 +443,8 @@ defmodule Uikit.FormComponents do
   attr :rest, :global,
     include: ~w(min max step disabled form required),
     doc: "arbitrary HTML attributes passed to the range input"
+
+  slot :label, doc: "the label content; supports HTML for custom styling"
 
   def uk_range(%{field: %Phoenix.HTML.FormField{} = field} = assigns) do
     errors = if Phoenix.Component.used_input?(field), do: field.errors, else: []
@@ -423,7 +460,7 @@ defmodule Uikit.FormComponents do
   def uk_range(assigns) do
     ~H"""
     <div>
-      <label :if={@label} class="uk-form-label" for={@id}>{@label}</label>
+      <label :if={@label != []} class="uk-form-label" for={@id}>{render_slot(@label)}</label>
       <div class="uk-form-controls">
         <input
           type="range"
