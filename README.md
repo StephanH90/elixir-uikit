@@ -41,6 +41,51 @@ mix deps.get
 mix phx.server
 ```
 
+## Agent Usage Rules
+
+`elixir_uikit` ships rules for coding agents (Claude Code, Copilot, etc.) via the [`usage_rules`](https://hex.pm/packages/usage_rules) package. The rules cover component APIs, CSS utilities, JS hooks, and common LiveView patterns — install them so your agent writes idiomatic UIkit code instead of guessing.
+
+Add `usage_rules` to your deps and configure it in `mix.exs`:
+
+```elixir
+def project do
+  [
+    # ...
+    usage_rules: [
+      file: "AGENTS.md",
+      usage_rules: [:elixir_uikit]
+    ]
+  ]
+end
+```
+
+Then sync:
+
+```bash
+mix usage_rules.sync
+```
+
+This pulls `usage-rules.md` and everything under `usage-rules/` into your `AGENTS.md` (or `CLAUDE.md`, `GEMINI.md`, etc. — whichever you point `file:` at).
+
+**Prefer a dedicated skill** over inlining? Build one:
+
+```elixir
+usage_rules: [
+  file: "CLAUDE.md",
+  skills: [
+    location: ".claude/skills",
+    build: [
+      "elixir-uikit": [
+        description: "Use this skill when building UI with elixir_uikit components, UIkit CSS, or LiveView hooks (Sortable, Modal, Switcher).",
+        usage_rules: [:elixir_uikit]
+      ]
+    ]
+  ]
+]
+```
+
+The generated `SKILL.md` is loaded on-demand by the agent, keeping your main `CLAUDE.md` small.
+
 ## Usage
 
 Components are automatically imported by the installer. Use them in your HEEx templates:

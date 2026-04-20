@@ -5,6 +5,14 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1] - 2026-04-20
+
+### Documentation
+
+- README: add **Agent Usage Rules** section showing how to wire
+  `elixir_uikit` into the `usage_rules` package, either inlined into
+  `AGENTS.md` / `CLAUDE.md` or as a dedicated agent skill.
+
 ## [0.7.0] - 2026-04-20
 
 ### Breaking
