@@ -22,11 +22,20 @@ defmodule Uikit.Components do
   defp uikit_opts(assigns, specs) do
     specs
     |> Enum.map(fn
-      spec when is_binary(spec) -> spec
-      false -> nil
-      {key, :flag} -> Map.get(assigns, key) && "#{to_kebab(key)}: true"
-      {key, :unless} -> Map.get(assigns, key) == false && "#{to_kebab(key)}: false"
-      key when is_atom(key) -> Map.get(assigns, key) && "#{to_kebab(key)}: #{Map.get(assigns, key)}"
+      spec when is_binary(spec) ->
+        spec
+
+      false ->
+        nil
+
+      {key, :flag} ->
+        Map.get(assigns, key) && "#{to_kebab(key)}: true"
+
+      {key, :unless} ->
+        Map.get(assigns, key) == false && "#{to_kebab(key)}: false"
+
+      key when is_atom(key) ->
+        Map.get(assigns, key) && "#{to_kebab(key)}: #{Map.get(assigns, key)}"
     end)
     |> Enum.filter(& &1)
     |> Enum.join("; ")
@@ -1007,8 +1016,14 @@ defmodule Uikit.Components do
   def uk_dropdown(assigns) do
     dropdown_opts =
       uikit_opts(assigns, [
-        :mode, :pos, :offset, :delay_show, :delay_hide, :stretch,
-        :animation, :duration,
+        :mode,
+        :pos,
+        :offset,
+        :delay_show,
+        :delay_hide,
+        :stretch,
+        :animation,
+        :duration,
         {:animate_out, :flag},
         {:flip, :unless},
         {:shift, :unless},
@@ -1105,7 +1120,7 @@ defmodule Uikit.Components do
   slot :inner_block, required: true, doc: "the alert content"
 
   def uk_alert(assigns) do
-    alert_opts = uikit_opts(assigns, [{:animation, :unless},:duration])
+    alert_opts = uikit_opts(assigns, [{:animation, :unless}, :duration])
 
     assigns = assign(assigns, :alert_opts, alert_opts)
 
@@ -1169,7 +1184,11 @@ defmodule Uikit.Components do
   attr :large, :boolean, default: false, doc: "increases cell padding"
   attr :justify, :boolean, default: false, doc: "removes padding from outermost cells"
   attr :middle, :boolean, default: false, doc: "vertically centers cell content"
-  attr :responsive, :boolean, default: false, doc: "wraps in a scrollable container for small screens"
+
+  attr :responsive, :boolean,
+    default: false,
+    doc: "wraps in a scrollable container for small screens"
+
   attr :caption_bottom, :boolean, default: false, doc: "moves the caption below the table"
   attr :class, :any, default: nil, doc: "additional CSS classes for the table element"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the table element"

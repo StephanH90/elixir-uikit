@@ -143,3 +143,18 @@ $global-primary-background: #1e87f0;
 
 /* Your custom styles below */
 ```
+
+## Configuration
+
+### Error Translator
+
+By default, form components interpolate `%{key}` placeholders in error messages.
+To use your own translator (e.g., for Gettext/i18n support), configure:
+
+```elixir
+# config/config.exs
+config :elixir_uikit, :error_translator, {MyAppWeb.CoreComponents, :translate_error}
+```
+
+The translator function receives `{msg, opts}` and should return a string.
+This is the same signature as Phoenix's generated `translate_error/1`.

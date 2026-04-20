@@ -449,7 +449,12 @@ defmodule DevWeb.HomeLive do
 
                     <div class="uk-inline">
                       <.uk_button>Reveal Top</.uk_button>
-                      <.uk_dropdown id="dd-reveal-top" animation="reveal-top" animate_out duration={500}>
+                      <.uk_dropdown
+                        id="dd-reveal-top"
+                        animation="reveal-top"
+                        animate_out
+                        duration={500}
+                      >
                         <p>Animated with reveal-top.</p>
                       </.uk_dropdown>
                     </div>
@@ -481,7 +486,12 @@ defmodule DevWeb.HomeLive do
                   <.uk_button variant="primary" phx-click="show_server_alert">
                     Trigger Alert from Server
                   </.uk_button>
-                  <.uk_alert :if={@server_alert} variant={@server_alert} closable phx-click="dismiss_server_alert">
+                  <.uk_alert
+                    :if={@server_alert}
+                    variant={@server_alert}
+                    closable
+                    phx-click="dismiss_server_alert"
+                  >
                     <p>This alert was triggered from the server! Counter: {@counter}</p>
                   </.uk_alert>
                 </:body>
@@ -631,19 +641,25 @@ defmodule DevWeb.HomeLive do
                         <td>1</td>
                         <td>Alice</td>
                         <td>Admin</td>
-                        <td><.uk_label variant="success">Active</.uk_label></td>
+                        <td>
+                          <.uk_label variant="success">Active</.uk_label>
+                        </td>
                       </tr>
                       <tr>
                         <td>2</td>
                         <td>Bob</td>
                         <td>Editor</td>
-                        <td><.uk_label variant="warning">Inactive</.uk_label></td>
+                        <td>
+                          <.uk_label variant="warning">Inactive</.uk_label>
+                        </td>
                       </tr>
                       <tr>
                         <td>3</td>
                         <td>Carol</td>
                         <td>Viewer</td>
-                        <td><.uk_label variant="success">Active</.uk_label></td>
+                        <td>
+                          <.uk_label variant="success">Active</.uk_label>
+                        </td>
                       </tr>
                     </:body>
                   </.uk_table>

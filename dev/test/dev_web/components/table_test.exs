@@ -1,5 +1,6 @@
 defmodule DevWeb.Components.TableTest do
   use DevWeb.ConnCase, async: true
+
   import Phoenix.LiveViewTest
 
   describe "uk_table/1 rendering" do
