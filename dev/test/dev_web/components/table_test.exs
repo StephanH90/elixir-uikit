@@ -36,8 +36,8 @@ defmodule DevWeb.Components.TableTest do
 
     test "table section renders thead and tbody", %{conn: conn} do
       {:ok, _view, html} = live(conn, "/")
-      assert html =~ "<thead>"
-      assert html =~ "<tbody>"
+      assert html =~ "<thead"
+      assert html =~ "<tbody"
     end
 
     test "live table renders initial rows from assigns", %{conn: conn} do

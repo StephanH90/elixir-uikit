@@ -628,15 +628,15 @@ defmodule DevWeb.HomeLive do
               <.uk_card>
                 <:body>
                   <.uk_table striped divider>
-                    <:head>
+                    <.uk_thead>
                       <tr>
                         <th class="uk-table-shrink">#</th>
                         <th class="uk-table-expand">Name</th>
                         <th>Role</th>
                         <th>Status</th>
                       </tr>
-                    </:head>
-                    <:body>
+                    </.uk_thead>
+                    <.uk_tbody>
                       <tr>
                         <td>1</td>
                         <td>Alice</td>
@@ -661,7 +661,7 @@ defmodule DevWeb.HomeLive do
                           <.uk_label variant="success">Active</.uk_label>
                         </td>
                       </tr>
-                    </:body>
+                    </.uk_tbody>
                   </.uk_table>
                 </:body>
               </.uk_card>
@@ -670,14 +670,14 @@ defmodule DevWeb.HomeLive do
               <.uk_card>
                 <:body>
                   <.uk_table hover small>
-                    <:head>
+                    <.uk_thead>
                       <tr>
                         <th>Name</th>
                         <th>Role</th>
                         <th>Status</th>
                       </tr>
-                    </:head>
-                    <:body>
+                    </.uk_thead>
+                    <.uk_tbody>
                       <tr>
                         <td>Alice</td>
                         <td>Admin</td>
@@ -688,7 +688,7 @@ defmodule DevWeb.HomeLive do
                         <td>Editor</td>
                         <td>Inactive</td>
                       </tr>
-                    </:body>
+                    </.uk_tbody>
                   </.uk_table>
                 </:body>
               </.uk_card>
@@ -697,7 +697,7 @@ defmodule DevWeb.HomeLive do
               <.uk_card>
                 <:body>
                   <.uk_table divider responsive>
-                    <:head>
+                    <.uk_thead>
                       <tr>
                         <th>Column A</th>
                         <th>Column B</th>
@@ -706,8 +706,8 @@ defmodule DevWeb.HomeLive do
                         <th>Column E</th>
                         <th>Column F</th>
                       </tr>
-                    </:head>
-                    <:body>
+                    </.uk_thead>
+                    <.uk_tbody>
                       <tr>
                         <td>Alpha</td>
                         <td>Beta</td>
@@ -724,7 +724,7 @@ defmodule DevWeb.HomeLive do
                         <td>Lambda</td>
                         <td>Mu</td>
                       </tr>
-                    </:body>
+                    </.uk_tbody>
                   </.uk_table>
                 </:body>
               </.uk_card>
@@ -736,22 +736,22 @@ defmodule DevWeb.HomeLive do
                     Add Row
                   </.uk_button>
                   <.uk_table id="live-table" striped divider class="uk-margin-top">
-                    <:head>
+                    <.uk_thead>
                       <tr>
                         <th class="uk-table-shrink">#</th>
                         <th class="uk-table-expand">Name</th>
                         <th>Role</th>
                         <th>Status</th>
                       </tr>
-                    </:head>
-                    <:body>
+                    </.uk_thead>
+                    <.uk_tbody>
                       <tr :for={row <- @table_rows} id={"table-row-#{row.id}"}>
                         <td>{row.id}</td>
                         <td>{row.name}</td>
                         <td>{row.role}</td>
                         <td>{row.status}</td>
                       </tr>
-                    </:body>
+                    </.uk_tbody>
                   </.uk_table>
                 </:body>
               </.uk_card>

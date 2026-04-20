@@ -1143,8 +1143,8 @@ defmodule Uikit.Components do
   Renders a UIkit table.
 
   Applies UIkit table styling modifiers and optionally wraps in a responsive
-  scrollable container. Use standard `<thead>`, `<tbody>`, and `<td>` elements
-  inside the structured slots.
+  scrollable container. Use `uk_thead`, `uk_tbody`, `uk_tfoot`, and `uk_caption`
+  components inside for full control over attributes on each section.
 
   Column-level classes (`uk-table-shrink`, `uk-table-expand`, `uk-table-link`)
   are applied directly on `<th>` or `<td>` elements, not as component attributes.
@@ -1152,29 +1152,30 @@ defmodule Uikit.Components do
   ## Examples
 
       <.uk_table striped divider>
-        <:head>
+        <.uk_thead>
           <tr>
             <th class="uk-table-shrink">#</th>
             <th class="uk-table-expand">Name</th>
             <th>Status</th>
           </tr>
-        </:head>
-        <:body>
+        </.uk_thead>
+        <.uk_tbody>
           <tr :for={row <- @rows}>
             <td>{row.id}</td>
             <td>{row.name}</td>
             <td>{row.status}</td>
           </tr>
-        </:body>
+        </.uk_tbody>
       </.uk_table>
 
+      # With attributes on tbody (e.g. for sortable rows)
       <.uk_table hover responsive>
-        <:head>
+        <.uk_thead>
           <tr><th>Column</th></tr>
-        </:head>
-        <:body>
-          <tr><td>Long content that scrolls horizontally on small screens</td></tr>
-        </:body>
+        </.uk_thead>
+        <.uk_tbody id="sortable-rows" phx-hook="Sortable">
+          <tr><td>Draggable row</td></tr>
+        </.uk_tbody>
       </.uk_table>
   """
   attr :striped, :boolean, default: false, doc: "alternates row background colors"
@@ -1193,11 +1194,7 @@ defmodule Uikit.Components do
   attr :class, :any, default: nil, doc: "additional CSS classes for the table element"
   attr :rest, :global, doc: "the arbitrary HTML attributes to add to the table element"
 
-  slot :caption, doc: "the table caption"
-  slot :head, doc: "the table header content (place <tr> elements inside)"
-  slot :foot, doc: "the table footer content (place <tr> elements inside)"
-  slot :body, doc: "the table body content (place <tr> elements inside)"
-  slot :inner_block, doc: "raw table content, used when not using structured slots"
+  slot :inner_block, required: true, doc: "table content (use uk_thead, uk_tbody, etc.)"
 
   def uk_table(assigns) do
     ~H"""
@@ -1217,13 +1214,85 @@ defmodule Uikit.Components do
         ]}
         {@rest}
       >
-        <caption :if={@caption != []}>{render_slot(@caption)}</caption>
-        <thead :if={@head != []}>{render_slot(@head)}</thead>
-        <tfoot :if={@foot != []}>{render_slot(@foot)}</tfoot>
-        <tbody :if={@body != []}>{render_slot(@body)}</tbody>
         {render_slot(@inner_block)}
       </table>
     </div>
+    """
+  end
+
+  @doc """
+  Renders a table header section (`<thead>`).
+
+  ## Example
+
+      <.uk_thead class="uk-background-muted">
+        <tr><th>Name</th><th>Value</th></tr>
+      </.uk_thead>
+  """
+  attr :class, :any, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "arbitrary HTML attributes for the thead element"
+  slot :inner_block, required: true
+
+  def uk_thead(assigns) do
+    ~H"""
+    <thead class={@class} {@rest}>{render_slot(@inner_block)}</thead>
+    """
+  end
+
+  @doc """
+  Renders a table body section (`<tbody>`).
+
+  Accepts `@rest` attributes, making it easy to add `id`, `phx-hook`, etc.
+
+  ## Example
+
+      <.uk_tbody id="sortable-rows" phx-hook="Sortable">
+        <tr :for={row <- @rows}><td>{row.name}</td></tr>
+      </.uk_tbody>
+  """
+  attr :class, :any, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "arbitrary HTML attributes for the tbody element"
+  slot :inner_block, required: true
+
+  def uk_tbody(assigns) do
+    ~H"""
+    <tbody class={@class} {@rest}>{render_slot(@inner_block)}</tbody>
+    """
+  end
+
+  @doc """
+  Renders a table footer section (`<tfoot>`).
+
+  ## Example
+
+      <.uk_tfoot>
+        <tr><td colspan="3">Total: 42</td></tr>
+      </.uk_tfoot>
+  """
+  attr :class, :any, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "arbitrary HTML attributes for the tfoot element"
+  slot :inner_block, required: true
+
+  def uk_tfoot(assigns) do
+    ~H"""
+    <tfoot class={@class} {@rest}>{render_slot(@inner_block)}</tfoot>
+    """
+  end
+
+  @doc """
+  Renders a table caption (`<caption>`).
+
+  ## Example
+
+      <.uk_caption>Monthly Sales Data</.uk_caption>
+  """
+  attr :class, :any, default: nil, doc: "additional CSS classes"
+  attr :rest, :global, doc: "arbitrary HTML attributes for the caption element"
+  slot :inner_block, required: true
+
+  def uk_caption(assigns) do
+    ~H"""
+    <caption class={@class} {@rest}>{render_slot(@inner_block)}</caption>
     """
   end
 end

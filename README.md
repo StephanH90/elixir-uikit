@@ -60,28 +60,30 @@ Components are automatically imported by the installer. Use them in your HEEx te
 - `uk_card`, `uk_card_title`, `uk_container`, `uk_section`, `uk_grid`
 - `uk_modal`, `uk_modal_title`, `uk_sortable`, `uk_subnav`, `uk_switcher`
 - `uk_comment`, `uk_comment_list`, `uk_dropdown`, `uk_alert`
-- `uk_table`
+- `uk_table`, `uk_thead`, `uk_tbody`, `uk_tfoot`, `uk_caption`
 
 #### `uk_table` example
 
 ```heex
 <.uk_table striped divider responsive>
-  <:head>
+  <.uk_thead>
     <tr>
       <th class="uk-table-shrink">#</th>
       <th class="uk-table-expand">Name</th>
       <th>Status</th>
     </tr>
-  </:head>
-  <:body>
+  </.uk_thead>
+  <.uk_tbody id="rows" phx-hook="Sortable">
     <tr :for={row <- @rows} id={"row-#{row.id}"}>
       <td>{row.id}</td>
       <td>{row.name}</td>
       <td>{row.status}</td>
     </tr>
-  </:body>
+  </.uk_tbody>
 </.uk_table>
 ```
+
+Table sections (`uk_thead`, `uk_tbody`, `uk_tfoot`, `uk_caption`) are function components with `@rest` support for passing `id`, `phx-hook`, etc.
 
 Modifiers: `striped`, `divider`, `hover`, `small`, `large`, `justify`, `middle`, `responsive`, `caption_bottom`.
 Column-level classes (`uk-table-shrink`, `uk-table-expand`, `uk-table-link`) are applied directly to `<th>` / `<td>` elements.
