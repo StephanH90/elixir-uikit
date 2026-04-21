@@ -19,7 +19,7 @@ defmodule Uikit.FormComponents do
           <.uk_input field={@form[:name]}>
             <:label>Full Name</:label>
           </.uk_input>
-          <.uk_input field={@form[:email]} type="email">
+          <.uk_input field={@form[:email]} type="email" margin>
             <:label>Email <span class="uk-text-danger">*</span></:label>
           </.uk_input>
           <.uk_input field={@form[:role]} type="select" options={["Admin", "User"]}>
@@ -94,9 +94,12 @@ defmodule Uikit.FormComponents do
 
   For checkboxes, use `<.uk_checkbox>` instead (handles hidden field for false value).
 
+  Pass `margin` to add UIkit's `uk-margin` class to the generated wrapper for
+  non-hidden inputs.
+
   ## Examples
 
-      <.uk_input field={@form[:email]} type="email">
+      <.uk_input field={@form[:email]} type="email" margin>
         <:label>Email</:label>
       </.uk_input>
 
@@ -154,6 +157,10 @@ defmodule Uikit.FormComponents do
   attr :blank, :boolean, default: false, doc: "minimizes form control styling (uk-form-blank)"
   attr :class, :any, default: nil, doc: "additional CSS classes"
 
+  attr :margin, :boolean,
+    default: false,
+    doc: "adds uk-margin to the wrapper for non-hidden inputs"
+
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
          multiple pattern placeholder readonly required rows step),
@@ -182,7 +189,7 @@ defmodule Uikit.FormComponents do
     assigns = assign(assigns, :effective_state, effective_state(assigns.errors, assigns.state))
 
     ~H"""
-    <div>
+    <div class={@margin && "uk-margin"}>
       <label :if={@label != []} class="uk-form-label" for={@id}>{render_slot(@label)}</label>
       <div class="uk-form-controls">
         <select
@@ -212,7 +219,7 @@ defmodule Uikit.FormComponents do
     assigns = assign(assigns, :effective_state, effective_state(assigns.errors, assigns.state))
 
     ~H"""
-    <div>
+    <div class={@margin && "uk-margin"}>
       <label :if={@label != []} class="uk-form-label" for={@id}>{render_slot(@label)}</label>
       <div class="uk-form-controls">
         <textarea
@@ -239,7 +246,7 @@ defmodule Uikit.FormComponents do
     assigns = assign(assigns, :effective_state, effective_state(assigns.errors, assigns.state))
 
     ~H"""
-    <div>
+    <div class={@margin && "uk-margin"}>
       <label :if={@label != []} class="uk-form-label" for={@id}>{render_slot(@label)}</label>
       <div class="uk-form-controls">
         <input

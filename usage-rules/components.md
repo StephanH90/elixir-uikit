@@ -324,13 +324,14 @@ Wraps Phoenix `<.form>` with UIkit layout classes.
 Universal input component. Renders `<input>`, `<select>`, or `<textarea>` based on `type`. Automatically extracts errors from the form field.
 
 Labels are passed via the `<:label>` slot, which accepts arbitrary HEEx (required markers, icons, links, etc.). Omit the slot to render the input without a label.
+Pass `margin` to add UIkit's default `uk-margin` spacing to the generated wrapper for non-hidden inputs.
 
 ```heex
 <.uk_input field={@form[:name]}>
   <:label>Full Name</:label>
 </.uk_input>
 
-<.uk_input field={@form[:email]} type="email" size="large">
+<.uk_input field={@form[:email]} type="email" size="large" margin>
   <:label>Email <span class="uk-text-danger">*</span></:label>
 </.uk_input>
 
@@ -344,7 +345,7 @@ Labels are passed via the `<:label>` slot, which accepts arbitrary HEEx (require
 </.uk_input>
 ```
 
-**Attrs:** `field`, `type` (default `"text"`), `id`, `name`, `value`, `errors`, `size` (`small|large`), `width` (`xsmall|small|medium|large`), `state` (`danger|success`), `blank`, `class`. For select: `options`, `prompt`, `multiple`. Global attrs include `placeholder`, `required`, `disabled`, `readonly`, `min`, `max`, `step`, `rows`, `cols`, `pattern`, `maxlength`, `minlength`.
+**Attrs:** `field`, `type` (default `"text"`), `id`, `name`, `value`, `errors`, `size` (`small|large`), `width` (`xsmall|small|medium|large`), `state` (`danger|success`), `blank`, `margin`, `class`. For select: `options`, `prompt`, `multiple`. Global attrs include `placeholder`, `required`, `disabled`, `readonly`, `min`, `max`, `step`, `rows`, `cols`, `pattern`, `maxlength`, `minlength`.
 **Slots:** `label` (HEEx-capable label content).
 
 ### `uk_checkbox`

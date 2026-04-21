@@ -38,31 +38,23 @@ A complete form with real-time validation and submission.
   <.uk_fieldset>
     <:legend>User Details</:legend>
 
-    <div class="uk-margin">
-      <.uk_input field={@form[:name]} required>
-        <:label>Full Name <span class="uk-text-danger">*</span></:label>
-      </.uk_input>
-    </div>
+    <.uk_input field={@form[:name]} required margin>
+      <:label>Full Name <span class="uk-text-danger">*</span></:label>
+    </.uk_input>
 
-    <div class="uk-margin">
-      <.uk_input field={@form[:email]} type="email" required>
-        <:label>Email <span class="uk-text-danger">*</span></:label>
-      </.uk_input>
-    </div>
+    <.uk_input field={@form[:email]} type="email" required margin>
+      <:label>Email <span class="uk-text-danger">*</span></:label>
+    </.uk_input>
 
-    <div class="uk-margin">
-      <.uk_input field={@form[:role]} type="select"
-                 options={["Admin": "admin", "Editor": "editor", "Viewer": "viewer"]}
-                 prompt="Select a role...">
-        <:label>Role</:label>
-      </.uk_input>
-    </div>
+    <.uk_input field={@form[:role]} type="select" margin
+               options={["Admin": "admin", "Editor": "editor", "Viewer": "viewer"]}
+               prompt="Select a role...">
+      <:label>Role</:label>
+    </.uk_input>
 
-    <div class="uk-margin">
-      <.uk_input field={@form[:bio]} type="textarea" rows="4">
-        <:label>Bio</:label>
-      </.uk_input>
-    </div>
+    <.uk_input field={@form[:bio]} type="textarea" rows="4" margin>
+      <:label>Bio</:label>
+    </.uk_input>
 
     <div class="uk-margin">
       <.uk_checkbox field={@form[:agree]}>
@@ -78,7 +70,8 @@ A complete form with real-time validation and submission.
 ```
 
 Key points:
-- Wrap each field in `<div class="uk-margin">` for consistent spacing.
+- Pass `margin` to `uk_input` when you want built-in `uk-margin` spacing without an extra wrapper.
+- Wrap other controls such as `uk_checkbox` and action rows in `<div class="uk-margin">` for consistent spacing.
 - Errors display automatically when the field has been touched (`used_input?` check).
 - The `state` attr auto-sets to `"danger"` when errors are present.
 - Labels are passed via the `<:label>` slot so you can embed arbitrary HTML (required markers, links, icons, etc.).

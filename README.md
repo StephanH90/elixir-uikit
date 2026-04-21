@@ -138,6 +138,17 @@ Column-level classes (`uk-table-shrink`, `uk-table-expand`, `uk-table-link`) are
 - `uk_form`, `uk_input`, `uk_checkbox`, `uk_radio`, `uk_range`
 - `uk_fieldset`, `uk_form_label`, `uk_form_controls`, `uk_form_icon`
 
+`uk_input` can render text inputs, selects, and textareas. Pass `margin` when you
+want the component to add UIkit's default `uk-margin` spacing to its own wrapper:
+
+```heex
+<.uk_input field={@form[:role]} type="select" margin
+           options={["Admin": "admin", "User": "user"]}
+           prompt="Select a role...">
+  <:label>Role</:label>
+</.uk_input>
+```
+
 ### LiveView Hooks
 
 The installer sets up three hooks automatically:

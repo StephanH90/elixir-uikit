@@ -109,6 +109,44 @@ defmodule Uikit.FormComponentsTest do
     end
   end
 
+  describe "uk_input margin" do
+    test "adds uk-margin to text input wrappers" do
+      assigns = %{}
+
+      html =
+        rendered_to_string(~H"""
+        <.uk_input id="name" name="name" value="" margin />
+        """)
+
+      assert html =~ ~s(<div class="uk-margin">)
+      assert html =~ ~s(<input type="text")
+    end
+
+    test "adds uk-margin to select wrappers" do
+      assigns = %{}
+
+      html =
+        rendered_to_string(~H"""
+        <.uk_input id="role" name="role" type="select" value="" options={["A", "B"]} margin />
+        """)
+
+      assert html =~ ~s(<div class="uk-margin">)
+      assert html =~ ~s(<select)
+    end
+
+    test "adds uk-margin to textarea wrappers" do
+      assigns = %{}
+
+      html =
+        rendered_to_string(~H"""
+        <.uk_input id="bio" name="bio" type="textarea" value="" margin />
+        """)
+
+      assert html =~ ~s(<div class="uk-margin">)
+      assert html =~ ~s(<textarea)
+    end
+  end
+
   describe "uk_checkbox label slot" do
     test "renders HTML label content" do
       assigns = %{}

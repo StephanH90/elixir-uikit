@@ -35,7 +35,7 @@ Run `mix uikit.setup` to configure your project automatically (imports, hooks, C
 | Component | Key Attrs | Slots |
 |---|---|---|
 | `uk_form` | `for` (required), `id` (required), `layout` (`stacked\|horizontal`) | `inner_block` |
-| `uk_input` | `field`, `type` (text/email/select/textarea/etc.), `size`, `width`, `state`, `blank`, `options`, `prompt`, `multiple` | `label` |
+| `uk_input` | `field`, `type` (text/email/select/textarea/etc.), `size`, `width`, `state`, `blank`, `margin`, `options`, `prompt`, `multiple` | `label` |
 | `uk_checkbox` | `field`, `value`, `checked`, `state` | `label` |
 | `uk_radio` | `field`, `value` (required), `checked`, `state` | `label` |
 | `uk_range` | `field`, `value` | `label` |
