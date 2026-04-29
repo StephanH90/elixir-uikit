@@ -44,9 +44,10 @@ const Modal = {
   },
   handleAttr() {
     const show = this.el.dataset.show === "true";
-    if (show) {
+    const isOpen = this.el.classList.contains("uk-open");
+    if (show && !isOpen) {
       this.modal.show();
-    } else {
+    } else if (!show && isOpen) {
       this.modal.hide();
     }
   },
@@ -90,6 +91,20 @@ export function onBeforeElUpdated(from, to) {
     to.classList.add("uk-open");
     const style = from.getAttribute("style");
     if (style) to.setAttribute("style", style);
+  }
+
+  // Preserve modal open state, inline visibility styles, and aria attrs
+  // across patches. UIkit toggles these client-side on show/hide; without
+  // preservation morphdom strips them on every patch and the Modal hook
+  // re-runs show()/hide(), causing the modal to flash or disappear.
+  if (from.classList.contains("uk-open") && from.hasAttribute("uk-modal")) {
+    to.classList.add("uk-open");
+    const style = from.getAttribute("style");
+    if (style) to.setAttribute("style", style);
+    for (const attr of ["aria-hidden", "aria-modal", "tabindex"]) {
+      const value = from.getAttribute(attr);
+      if (value !== null) to.setAttribute(attr, value);
+    }
   }
 }
 
