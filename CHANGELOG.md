@@ -65,3 +65,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.5.4]
 
 - Version bump; prior history tracked in git log.
+
+<!-- changelog -->
+
+## [v0.7.4](https://github.com/StephanH90/elixir-uikit/compare/v0.7.3...v0.7.4) (2026-05-01)
+
+
+
+
+### Bug Fixes:
+
+* merge classes correctly by Stephan Hug
