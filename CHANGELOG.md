@@ -5,6 +5,18 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.3] - 2026-05-01
+
+### Fixed
+
+- `uk_modal`: preserve open state across LiveView patches. UIkit's runtime adds
+  `uk-open`, inline `style`, and `aria-hidden` / `aria-modal` / `tabindex` to
+  the modal element on open; morphdom previously stripped these on every patch,
+  causing the modal to flash or disappear after a server round-trip. The Modal
+  hook is now idempotent (only transitions on actual `data-show` ↔ `uk-open`
+  changes), and `onBeforeElUpdated` now copies these attributes from the live
+  element to the incoming element for any `uk-modal`.
+
 ## [0.7.2] - 2026-04-21
 
 ### Added
