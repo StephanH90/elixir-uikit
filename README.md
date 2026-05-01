@@ -216,3 +216,31 @@ config :elixir_uikit, :error_translator, {MyAppWeb.CoreComponents, :translate_er
 
 The translator function receives `{msg, opts}` and should return a string.
 This is the same signature as Phoenix's generated `translate_error/1`.
+
+## Releasing
+
+Releases are automated via [`git_ops`](https://hex.pm/packages/git_ops), which
+derives the next version from [Conventional Commits](https://www.conventionalcommits.org/)
+since the last tag, updates `mix.exs` and `CHANGELOG.md`, and creates an
+annotated `vX.Y.Z` tag.
+
+Commit conventions used:
+
+- `fix:` → patch bump
+- `feat:` → minor bump
+- `feat!:` / `BREAKING CHANGE:` footer → major bump
+- `chore:`, `docs:`, `refactor:`, `test:` → no bump (still appear in changelog
+  unless marked `hidden?`)
+
+Release flow:
+
+```bash
+mix git_ops.release --dry-run   # preview version + changelog
+mix git_ops.release              # bump version, update CHANGELOG.md, tag
+git push github main --follow-tags
+mix hex.publish
+```
+
+For the very first release on a fresh repo use `--initial`. To force a patch
+bump when there are no qualifying commits, use `--force-patch`. Override the
+computed version with `--override X.Y.Z`.

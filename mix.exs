@@ -60,7 +60,8 @@ defmodule Uikit.MixProject do
       {:phoenix_live_view, "~> 1.0"},
       {:phoenix_html, "~> 4.0"},
       {:quokka, "~> 2.11", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.31", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.31", only: :dev, runtime: false},
+      {:git_ops, "~> 2.6", only: [:dev], runtime: false}
     ]
   end
 
