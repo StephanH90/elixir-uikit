@@ -71,7 +71,7 @@ defmodule Uikit.Components do
 
   attr :uk_toggle, :string, default: nil, doc: "the target modal or toggleable element"
   attr :disabled, :boolean, default: false, doc: "whether the button is disabled"
-  attr :class, :any, doc: "additional CSS classes"
+  attr :class, :any, default: nil, doc: "additional CSS classes"
 
   attr :rest, :global,
     include: ~w(href navigate patch method download uk-icon uk-toggle),
@@ -82,13 +82,12 @@ defmodule Uikit.Components do
   def uk_button(assigns) do
     assigns =
       assigns
-      |> assign_new(:class, fn ->
-        [
-          "uk-button",
-          "uk-button-#{assigns.variant}",
-          assigns.size && "uk-button-#{assigns.size}"
-        ]
-      end)
+      |> assign(:class, [
+        "uk-button",
+        "uk-button-#{assigns.variant}",
+        assigns.size && "uk-button-#{assigns.size}",
+        assigns.class
+      ])
       |> assign(:rest, prepare_button_rest(assigns))
 
     if assigns.rest[:href] || assigns.rest[:navigate] || assigns.rest[:patch] do
@@ -428,7 +427,7 @@ defmodule Uikit.Components do
   attr :ratio, :any, default: 1, doc: "the size multiplier of the icon (integer or float)"
   attr :id, :string, default: nil, doc: "optional DOM ID"
   attr :button, :boolean, default: false, doc: "whether to render as an icon button"
-  attr :class, :any, doc: "additional CSS classes"
+  attr :class, :any, default: nil, doc: "additional CSS classes"
 
   attr :rest, :global,
     include: ~w(href navigate patch method download uk-icon uk-toggle),
@@ -437,7 +436,7 @@ defmodule Uikit.Components do
   def uk_icon(assigns) do
     assigns =
       assigns
-      |> assign_new(:class, fn -> build_icon_class(assigns) end)
+      |> assign(:class, [build_icon_class(assigns), assigns.class])
       |> assign(:icon_opts, build_icon_opts(assigns))
 
     assigns = assign(assigns, :rest, Map.put(assigns.rest, :"uk-icon", assigns.icon_opts))
