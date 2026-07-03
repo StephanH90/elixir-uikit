@@ -7,22 +7,6 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 <!-- changelog -->
 
-
-### Bug Fixes:
-
-* bump dependencies by Stephan Hug
-
-## [v0.7.5](https://github.com/StephanH90/elixir-uikit/compare/v0.7.5...v0.7.6) (2026-07-03)
-
-
-
-
-### Bug Fixes:
-
-* bump dependencies by Stephan Hug
-
-* release version v0.7.4 by Stephan Hug
-
 ## [v0.7.4](https://github.com/StephanH90/elixir-uikit/compare/v0.7.3...v0.7.4) (2026-05-01)
 
 
