@@ -572,8 +572,7 @@ defmodule Uikit.Components do
             class={if @full, do: "uk-modal-close-full", else: "uk-modal-close-default"}
             type="button"
             uk-close
-          >
-          </button>
+          ></button>
         <% end %>
 
         <div :if={@header != []} class="uk-modal-header">
