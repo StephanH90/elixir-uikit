@@ -70,7 +70,23 @@ const Modal = {
 //     dom: { onBeforeElUpdated }
 //   })
 // UIkit attributes that cause SVG injection into the element
-const UIKIT_SVG_ATTRS = ["uk-icon", "uk-close", "uk-spinner", "uk-totop", "uk-marker"];
+const UIKIT_SVG_ATTRS = [
+  "uk-icon",
+  "uk-drop-parent-icon",
+  "uk-nav-parent-icon",
+  "uk-navbar-parent-icon",
+  "uk-navbar-toggle-icon",
+  "uk-overlay-icon",
+  "uk-pagination-next",
+  "uk-pagination-previous",
+  "uk-search-icon",
+  "uk-slidenav-next",
+  "uk-slidenav-previous",
+  "uk-close",
+  "uk-spinner",
+  "uk-totop",
+  "uk-marker",
+];
 
 export function onBeforeElUpdated(from, to) {
   // Preserve UIkit-injected SVGs across patches
@@ -78,9 +94,13 @@ export function onBeforeElUpdated(from, to) {
     if (from.hasAttribute(attr)) {
       if (from.getAttribute(attr) === to.getAttribute(attr)) {
         to.innerHTML = from.innerHTML;
+        // UIkit also adds classes to the element itself (e.g. `uk-icon`).
+        // Copy them over so morphdom does not strip the icon styling.
+        from.classList.forEach((cls) => to.classList.add(cls));
       } else {
-        // Attribute changed — re-render after patch
-        requestAnimationFrame(() => UIkit.update(to));
+        // Attribute changed — re-render after patch. Update `from`: morphdom
+        // keeps `from` in the DOM and discards `to`.
+        requestAnimationFrame(() => UIkit.update(from));
       }
       break;
     }

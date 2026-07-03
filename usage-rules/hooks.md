@@ -106,7 +106,7 @@ No `id` or `phx-update="ignore"` needed — icons can be changed dynamically fro
 
 ### Runtime Classes
 
-UIkit's JS adds `uk-*` classes at runtime (e.g. `uk-alert` class for `uk-alert` attribute, `uk-icon` class on `uk-close` elements). Morphdom strips these on every patch. The callback preserves all `uk-*` classes from the current DOM into the incoming DOM.
+UIkit's JS adds classes at runtime (e.g. the `uk-icon` class on `uk-icon` and `uk-close` elements). Morphdom strips these on every patch. On icon elements (any attribute in the SVG list above), the callback copies the current DOM's classes into the incoming DOM so the icon styling survives.
 
 ### Dropdowns
 
