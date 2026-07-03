@@ -7,6 +7,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 <!-- changelog -->
 
+## [v0.7.6](https://github.com/StephanH90/elixir-uikit/compare/v0.7.5...v0.7.6) (2026-07-03)
+
+
+
+
+### Bug Fixes:
+
+* preserve all UIkit SVG icons and their classes across LiveView patches by Stephan Hug
+
+* bump dependencies by Stephan Hug
+
 ## [v0.7.4](https://github.com/StephanH90/elixir-uikit/compare/v0.7.3...v0.7.4) (2026-05-01)
 
 
