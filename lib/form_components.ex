@@ -612,14 +612,12 @@ defmodule Uikit.FormComponents do
           class={["uk-form-icon", @flip && "uk-form-icon-flip", @class]}
           uk-icon={"icon: #{@icon}"}
           {@rest}
-        >
-        </a>
+        ></a>
       <% else %>
         <span
           class={["uk-form-icon", @flip && "uk-form-icon-flip", @class]}
           uk-icon={"icon: #{@icon}"}
-        >
-        </span>
+        ></span>
       <% end %>
       {render_slot(@inner_block)}
     </div>
