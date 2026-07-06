@@ -582,7 +582,7 @@ defmodule Uikit.FormComponents do
       </.uk_form_icon>
 
       <.uk_form_label for="search">Search</.uk_form_label>
-      <.uk_form_icon icon="search" flip clickable>
+      <.uk_form_icon icon="search" flip clickable class="uk-width-1-1">
         <input class="uk-input" type="search" id="search" name="search" />
       </.uk_form_icon>
   """
@@ -597,6 +597,7 @@ defmodule Uikit.FormComponents do
     doc: "renders the icon as a clickable <a> element"
 
   attr :class, :any, default: nil, doc: "additional CSS classes for the icon element"
+  attr :wrapper_class, :any, default: nil, doc: "additional CSS classes for the wrapping element"
 
   attr :rest, :global,
     include: ~w(href navigate patch phx-click),
@@ -606,7 +607,7 @@ defmodule Uikit.FormComponents do
 
   def uk_form_icon(assigns) do
     ~H"""
-    <div class="uk-inline">
+    <div class={["uk-inline", @wrapper_class]}>
       <%= if @clickable do %>
         <a
           class={["uk-form-icon", @flip && "uk-form-icon-flip", @class]}
