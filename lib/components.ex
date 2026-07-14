@@ -1195,27 +1195,38 @@ defmodule Uikit.Components do
   slot :inner_block, required: true, doc: "table content (use uk_thead, uk_tbody, etc.)"
 
   def uk_table(assigns) do
-    ~H"""
-    <div class={@responsive && "uk-overflow-auto"}>
-      <table
-        class={[
-          "uk-table",
-          @striped && "uk-table-striped",
-          @divider && "uk-table-divider",
-          @hover && "uk-table-hover",
-          @small && "uk-table-small",
-          @large && "uk-table-large",
-          @justify && "uk-table-justify",
-          @middle && "uk-table-middle",
-          @caption_bottom && "uk-table-caption-bottom",
-          @class
-        ]}
-        {@rest}
-      >
+    assigns = assign(assigns, :table_class, build_table_class(assigns))
+
+    if assigns.responsive do
+      ~H"""
+      <div class="uk-overflow-auto">
+        <table class={@table_class} {@rest}>
+          {render_slot(@inner_block)}
+        </table>
+      </div>
+      """
+    else
+      ~H"""
+      <table class={@table_class} {@rest}>
         {render_slot(@inner_block)}
       </table>
-    </div>
-    """
+      """
+    end
+  end
+
+  defp build_table_class(assigns) do
+    [
+      "uk-table",
+      assigns.striped && "uk-table-striped",
+      assigns.divider && "uk-table-divider",
+      assigns.hover && "uk-table-hover",
+      assigns.small && "uk-table-small",
+      assigns.large && "uk-table-large",
+      assigns.justify && "uk-table-justify",
+      assigns.middle && "uk-table-middle",
+      assigns.caption_bottom && "uk-table-caption-bottom",
+      assigns.class
+    ]
   end
 
   @doc """
