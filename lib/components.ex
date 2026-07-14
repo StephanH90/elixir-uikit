@@ -1126,6 +1126,7 @@ defmodule Uikit.Components do
     <div
       uk-alert={if @alert_opts == "", do: true, else: @alert_opts}
       class={[
+        "uk-alert",
         @variant && "uk-alert-#{@variant}",
         @class
       ]}

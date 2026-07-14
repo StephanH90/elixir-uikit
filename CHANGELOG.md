@@ -7,6 +7,15 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 <!-- changelog -->
 
+## [v0.8.1](https://github.com/StephanH90/elixir-uikit/compare/v0.8.0...v0.8.1) (2026-07-14)
+
+
+
+
+### Bug Fixes:
+
+* remove wrapping div when not responsive by Stephan Hug
+
 ## [v0.8.0](https://github.com/StephanH90/elixir-uikit/compare/v0.7.6...v0.8.0) (2026-07-06)
 
 
