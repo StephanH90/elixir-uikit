@@ -69,7 +69,17 @@ const Modal = {
 //     hooks: UikitHooks,
 //     dom: { onBeforeElUpdated }
 //   })
-// UIkit attributes that cause SVG injection into the element
+
+// When UIkit initialises one of these components, it adds classes to the
+// element. A `<div uk-dropdown>` becomes `<div uk-dropdown class="uk-dropdown
+// uk-drop">`, and those classes are what hide it and position it.
+//
+// The server never renders them, so a patch takes them away again. The element
+// itself stays, so UIkit does not run a second time and cannot put them back.
+// The dropdown is then stuck open, sitting in the normal page flow.
+const UIKIT_CLASS_ATTRS = ["uk-dropdown", "uk-drop", "uk-modal", "uk-offcanvas"];
+
+// These components render an SVG into the element instead.
 const UIKIT_SVG_ATTRS = [
   "uk-icon",
   "uk-drop-parent-icon",
@@ -106,21 +116,28 @@ export function onBeforeElUpdated(from, to) {
     }
   }
 
-  // Preserve dropdown open state and positioning across patches
-  if (from.classList.contains("uk-open") && from.hasAttribute("uk-dropdown")) {
-    to.classList.add("uk-open");
+  // Carry over the classes UIkit added, plus the position and visibility it
+  // manages. `uk-open` comes along with the rest, so an open dropdown stays
+  // open.
+  //
+  // Only classes starting with `uk-` are copied, and only on the elements
+  // listed above. A class the template itself removed still goes away.
+  if (UIKIT_CLASS_ATTRS.some((attr) => from.hasAttribute(attr))) {
+    from.classList.forEach((cls) => {
+      if (cls.startsWith("uk-")) to.classList.add(cls);
+    });
+
     const style = from.getAttribute("style");
     if (style) to.setAttribute("style", style);
+
+    if (from.hasAttribute("hidden")) to.setAttribute("hidden", "");
   }
 
-  // Preserve modal open state, inline visibility styles, and aria attrs
-  // across patches. UIkit toggles these client-side on show/hide; without
-  // preservation morphdom strips them on every patch and the Modal hook
-  // re-runs show()/hide(), causing the modal to flash or disappear.
+  // An open modal also needs its aria attributes. UIkit sets them when the
+  // modal opens, so a patch takes them away and the Modal hook runs show() or
+  // hide() again, making the modal flash or vanish. Classes and style are
+  // already handled above.
   if (from.classList.contains("uk-open") && from.hasAttribute("uk-modal")) {
-    to.classList.add("uk-open");
-    const style = from.getAttribute("style");
-    if (style) to.setAttribute("style", style);
     for (const attr of ["aria-hidden", "aria-modal", "tabindex"]) {
       const value = from.getAttribute(attr);
       if (value !== null) to.setAttribute(attr, value);
